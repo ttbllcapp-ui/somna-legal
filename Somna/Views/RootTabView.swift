@@ -19,7 +19,7 @@ struct RootTabView: View {
                 .tabItem { Label("Settings", systemImage: "gearshape.fill") }
         }
         .tint(Somna.amber)
-        .background(Somna.ink.ignoresSafeArea())
+        .background(Somna.backdrop)
     }
 }
 

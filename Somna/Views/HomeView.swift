@@ -37,7 +37,7 @@ struct HomeView: View {
                 .padding(20)
                 .animation(.easeInOut(duration: 0.3), value: latestSession?.id)
             }
-            .background(Somna.ink.ignoresSafeArea())
+            .background(Somna.backdrop)
             .navigationBarHidden(true)
             .sheet(isPresented: $showAlarmSheet) {
                 AlarmSetupView()

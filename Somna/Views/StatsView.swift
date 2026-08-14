@@ -34,9 +34,9 @@ struct StatsView: View {
                 }
                 .padding(20)
             }
-            .background(Somna.ink.ignoresSafeArea())
+            .background(Somna.backdrop)
             .navigationTitle("Stats")
-            .toolbarBackground(Somna.ink, for: .navigationBar)
+            .toolbarColorScheme(.dark, for: .navigationBar)
         }
     }
 

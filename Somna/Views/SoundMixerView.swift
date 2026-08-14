@@ -64,9 +64,9 @@ struct SoundMixerView: View {
                 }
                 .padding(20)
             }
-            .background(Somna.ink.ignoresSafeArea())
+            .background(Somna.backdrop)
             .navigationTitle("Sounds")
-            .toolbarBackground(Somna.ink, for: .navigationBar)
+            .toolbarColorScheme(.dark, for: .navigationBar)
         }
     }
 

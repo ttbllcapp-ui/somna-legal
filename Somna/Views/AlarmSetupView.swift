@@ -68,9 +68,9 @@ struct AlarmSetupView: View {
                 .listRowBackground(Somna.card.opacity(0.5))
             }
             .scrollContentBackground(.hidden)
-            .background(Somna.ink.ignoresSafeArea())
+            .background(Somna.backdrop)
             .navigationTitle("Alarm")
-            .toolbarBackground(Somna.ink, for: .navigationBar)
+            .toolbarColorScheme(.dark, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") { save() }

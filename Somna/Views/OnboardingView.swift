@@ -35,7 +35,7 @@ struct OnboardingView: View {
             .animation(.easeInOut(duration: 0.35), value: step)
             .frame(maxHeight: .infinity)
         }
-        .background(Somna.ink.ignoresSafeArea())
+        .background(Somna.backdrop)
     }
 
     private var welcomeStep: some View {

@@ -43,9 +43,9 @@ struct SettingsView: View {
                 .listRowBackground(Somna.card)
             }
             .scrollContentBackground(.hidden)
-            .background(Somna.ink.ignoresSafeArea())
+            .background(Somna.backdrop)
             .navigationTitle("Settings")
-            .toolbarBackground(Somna.ink, for: .navigationBar)
+            .toolbarColorScheme(.dark, for: .navigationBar)
             .sheet(isPresented: $showProfileEdit) {
                 if let profile {
                     ProfileEditView(profile: profile)
@@ -91,9 +91,9 @@ private struct PolicyDetailView: View {
                 .lineSpacing(5)
                 .padding(20)
         }
-        .background(Somna.ink.ignoresSafeArea())
+        .background(Somna.backdrop)
         .navigationTitle(title)
-        .toolbarBackground(Somna.ink, for: .navigationBar)
+        .toolbarColorScheme(.dark, for: .navigationBar)
     }
 }
 

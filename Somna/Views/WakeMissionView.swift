@@ -66,7 +66,7 @@ struct WakeMissionView: View {
             Spacer()
         }
         .padding(20)
-        .background(Somna.ink.ignoresSafeArea())
+        .background(Somna.backdrop)
     }
 }
 

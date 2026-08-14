@@ -83,7 +83,7 @@ struct CoachView: View {
                 .clipShape(Capsule())
                 .padding(20)
             }
-            .background(Somna.ink.ignoresSafeArea())
+            .background(Somna.backdrop)
             .navigationBarHidden(true)
         }
     }
