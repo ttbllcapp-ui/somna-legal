@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 @main
 struct SomnaApp: App {
@@ -8,5 +9,6 @@ struct SomnaApp: App {
                 .preferredColorScheme(.dark)
                 .tint(Somna.amber)
         }
+        .modelContainer(for: [SleepSession.self, Alarm.self])
     }
 }

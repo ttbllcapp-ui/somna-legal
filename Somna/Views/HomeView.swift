@@ -1,9 +1,14 @@
 import SwiftUI
+import SwiftData
 
 struct HomeView: View {
-    let score = 88
-    let sleepDuration = "7s 52d"
-    let efficiency = "%94"
+    @Environment(\.modelContext) private var modelContext
+    @Query(sort: \SleepSession.startDate, order: .reverse) private var sessions: [SleepSession]
+    @AppStorage("activeSleepStart") private var activeSleepStartRaw: Double = 0
+    @State private var showAlarmSheet = false
+
+    private var latestSession: SleepSession? { sessions.first }
+    private var isTracking: Bool { activeSleepStartRaw > 0 }
 
     var body: some View {
         NavigationStack {
@@ -11,13 +16,23 @@ struct HomeView: View {
                 VStack(alignment: .leading, spacing: 20) {
                     header
                     integrationRow
-                    scoreRing
-                    statRow
+
+                    if let session = latestSession {
+                        scoreRing(for: session)
+                        statRow(for: session)
+                    } else {
+                        emptyState
+                    }
+
+                    trackingButton
                 }
                 .padding(20)
             }
             .background(Somna.ink.ignoresSafeArea())
             .navigationBarHidden(true)
+            .sheet(isPresented: $showAlarmSheet) {
+                AlarmSetupView()
+            }
         }
     }
 
@@ -28,6 +43,12 @@ struct HomeView: View {
                     .font(Somna.Font.serif(15))
                     .foregroundStyle(Somna.textDim)
                 Spacer()
+                Button {
+                    showAlarmSheet = true
+                } label: {
+                    Image(systemName: "alarm")
+                        .foregroundStyle(Somna.textDim)
+                }
                 FreeTag()
             }
             Text("İyi geceler, Tayfun")
@@ -44,8 +65,21 @@ struct HomeView: View {
         }
     }
 
-    private var scoreRing: some View {
-        HStack(spacing: 18) {
+    private var emptyState: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("Henüz kayıtlı gece yok")
+                .font(.system(size: 15, weight: .medium))
+                .foregroundStyle(Somna.textPrimary)
+            Text("Uyumadan önce aşağıdaki düğmeye dokun, uyandığında tekrar dokun.")
+                .font(.system(size: 12))
+                .foregroundStyle(Somna.textFaint)
+        }
+        .glassCard(padding: 14)
+    }
+
+    private func scoreRing(for session: SleepSession) -> some View {
+        let score = SleepScoreCalculator.score(for: session)
+        return HStack(spacing: 18) {
             ZStack {
                 Circle()
                     .stroke(Somna.hair, lineWidth: 8)
@@ -60,20 +94,52 @@ struct HomeView: View {
             .frame(width: 92, height: 92)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("Çok iyi")
+                Text(SleepScoreCalculator.label(for: score))
                     .font(.system(size: 17, weight: .medium))
                     .foregroundStyle(Somna.textPrimary)
-                Text("Son 7 gece · Watch verisiyle")
+                Text("Son kaydedilen gece")
                     .font(.system(size: 12))
                     .foregroundStyle(Somna.textFaint)
             }
         }
     }
 
-    private var statRow: some View {
-        HStack(spacing: 10) {
-            StatCard(label: "Uyku süresi", value: sleepDuration, delta: "▲ 6 dk", up: true)
-            StatCard(label: "Verimlilik", value: efficiency, delta: "▼ %1", up: false)
+    private func statRow(for session: SleepSession) -> some View {
+        let hours = session.asleepMinutes / 60
+        let minutes = session.asleepMinutes % 60
+        let efficiencyPercent = Int((session.efficiency * 100).rounded())
+        return HStack(spacing: 10) {
+            StatCard(label: "Uyku süresi", value: "\(hours)s \(minutes)d")
+            StatCard(label: "Verimlilik", value: "%\(efficiencyPercent)")
+        }
+    }
+
+    private var trackingButton: some View {
+        Button {
+            toggleTracking()
+        } label: {
+            Text(isTracking ? "Uyandım" : "Uykuya dal")
+                .font(.system(size: 14, weight: .medium))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .foregroundStyle(isTracking ? Somna.ink : Somna.textPrimary)
+                .background(isTracking ? Somna.amber : Somna.card)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .strokeBorder(isTracking ? .clear : Somna.hair, lineWidth: 0.5)
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        }
+    }
+
+    private func toggleTracking() {
+        if isTracking {
+            let start = Date(timeIntervalSince1970: activeSleepStartRaw)
+            let session = SleepSession.estimatingStages(startDate: start, endDate: .now)
+            modelContext.insert(session)
+            activeSleepStartRaw = 0
+        } else {
+            activeSleepStartRaw = Date.now.timeIntervalSince1970
         }
     }
 }
@@ -109,8 +175,6 @@ private struct IntegrationPill: View {
 private struct StatCard: View {
     let label: String
     let value: String
-    let delta: String
-    let up: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -120,9 +184,6 @@ private struct StatCard: View {
             Text(value)
                 .font(Somna.Font.mono(16))
                 .foregroundStyle(Somna.textPrimary)
-            Text(delta)
-                .font(Somna.Font.mono(9.5))
-                .foregroundStyle(up ? Somna.stageLight : Somna.stageAwake)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .glassCard(padding: 12)
@@ -130,5 +191,7 @@ private struct StatCard: View {
 }
 
 #Preview {
-    HomeView().preferredColorScheme(.dark)
+    HomeView()
+        .modelContainer(for: [SleepSession.self, Alarm.self], inMemory: true)
+        .preferredColorScheme(.dark)
 }
