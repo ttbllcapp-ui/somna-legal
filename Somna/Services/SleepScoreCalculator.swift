@@ -4,9 +4,7 @@ import Foundation
 /// A placeholder blend until real sensor data (HRV, motion) can inform it —
 /// see docs/design-concept.md "Sonraki adımlar".
 enum SleepScoreCalculator {
-    static let goalMinutes = 8 * 60
-
-    static func score(for session: SleepSession) -> Int {
+    static func score(for session: SleepSession, goalMinutes: Int) -> Int {
         let durationRatio = min(1, Double(session.asleepMinutes) / Double(goalMinutes))
         let durationScore = durationRatio * 60
         let efficiencyScore = session.efficiency * 40

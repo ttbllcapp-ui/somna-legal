@@ -32,23 +32,46 @@ ekranı, koç kartı) işaretliyor.
 
 ## Ürün / monetizasyon
 
-- Uyku koçu **her zaman ücretsiz** — Apple Health + Apple Watch verisini okuyup
-  konuşuyor, bu Somna'nın elinde tutma sebebi.
-- Somna+ sadece hacim satıyor: 50+ ses, 1 yıllık geçmiş, özel görev fotoğrafı.
+- **2026-08-14 karar: tamamen ücretsiz.** Somna+ / paywall kavramı tamamen
+  kaldırıldı — hiçbir özellik kilitli değil. Önceki "koç ücretsiz, hacim
+  ücretli" planı terk edildi.
+
+## Kişiselleştirme
+
+- Onboarding'de doğum tarihi, boy, kilo, cinsiyet sorulur.
+- Uyku hedefi, National Sleep Foundation'ın 2015 uzman panel raporundaki
+  yaş bazlı süre aralıklarından hesaplanır (`SleepGoalCalculator`) — sabit
+  8 saat değil, kişiye özel.
+- Boy/kilo'dan BMI hesaplanır, sadece bağlamsal ve tıbbi olmayan bir not
+  için kullanılır (ör. yüksek BMI → apne riski uyarısı) — süre hesabını
+  etkilemez, çünkü bilimsel literatür süreyi yaşa bağlıyor, kiloya değil.
 
 ## Ekranlar
 
-1. Bu gece (skor halkası, Health/Watch rozetleri, süre/verimlilik kartları)
-2. Uyandırma görevi (kamera viewfinder, nesne eşleştirme, geri sayım)
-3. Uyku evreleri (stacked bar + lejant, gerçek/tahmini ayrımı açık)
-4. Sesler (katmanlı ses karıştırıcı, 3 ücretsiz + Somna+ ile 50+)
-5. Koç (sohbet + gömülü veri kartı)
-6. Somna+ (ücretsiz vs pro plan kartları)
+1. Onboarding (3 adım: karşılama, profil, kişisel hedef sonucu)
+2. Bu gece (skor halkası, Health/Watch rozetleri, süre/verimlilik kartları,
+   uykuya dal/uyandım akışı)
+3. İstatistik (gün: son gece evre dağılımı; hafta/ay: Swift Charts ile
+   ortalama uyku süresi bar grafiği)
+4. Uyandırma görevi (alarm kurulumundan açılan sheet — kamera viewfinder,
+   nesne eşleştirme, geri sayım, + yatma vakti hatırlatıcısı)
+5. Sesler (kategorilere ayrılmış geniş ses kütüphanesi — yağmur/fırtına,
+   doğa, beyaz/pembe gürültü, enstrümantal, şehir/mekan)
+6. Koç (sohbet + gömülü veri kartı)
+7. Ayarlar (profil düzenleme, Gizlilik/Kullanım Şartları/Sağlık Bilgisi
+   Açıklaması)
 
 ## Sonraki adımlar
 
-- Gerçek Apple Health / HealthKit okuma entegrasyonu
-- Gerçek kamera + Vision framework ile nesne eşleştirme
-- RevenueCat paywall entegrasyonu (AquaPulse'taki desenle aynı, ama kod
-  paylaşılmadan — [[feedback_project_isolation]])
-- Uygulama ikonu ve gerçek marka kimliği
+- Gerçek Apple Health / HealthKit okuma entegrasyonu (şu an sadece rozet)
+- Gerçek kamera + Vision framework ile nesne eşleştirme (şu an mockup)
+- Gerçek sensör (hareket/ses) tabanlı uyku evresi tespiti — şu an placeholder
+  heuristic (`SleepSession.estimatingStages`)
+- **watchOS companion target** — rakiplerin çoğu (AutoSleep, SleepWatch,
+  Sleep Cycle) Watch'ta otomatik tracking + complication sunuyor; bu ayrı
+  bir Xcode target + entitlement gerektiren büyük bir sonraki milestone,
+  bu turda kapsam dışı bırakıldı.
+- "Programlar" (yapılandırılmış uyku iyileştirme müfredatı, RISE/BetterSleep
+  tarzı) — kapsam dışı bırakıldı, ayrı bir özellik olarak planlanmalı.
+- Uygulama ikonu ve gerçek marka kimliği — [[feedback_design_is_users_job]]
+  gereği kullanıcı yapacak.

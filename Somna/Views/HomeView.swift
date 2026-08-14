@@ -4,11 +4,15 @@ import SwiftData
 struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \SleepSession.startDate, order: .reverse) private var sessions: [SleepSession]
+    @Query private var profiles: [UserProfile]
     @AppStorage("activeSleepStart") private var activeSleepStartRaw: Double = 0
     @State private var showAlarmSheet = false
 
     private var latestSession: SleepSession? { sessions.first }
     private var isTracking: Bool { activeSleepStartRaw > 0 }
+    private var goalMinutes: Int {
+        SleepGoalCalculator.targetMinutes(forAge: profiles.first?.ageYears ?? 30)
+    }
 
     var body: some View {
         NavigationStack {
@@ -17,16 +21,21 @@ struct HomeView: View {
                     header
                     integrationRow
 
-                    if let session = latestSession {
-                        scoreRing(for: session)
-                        statRow(for: session)
-                    } else {
-                        emptyState
+                    Group {
+                        if let session = latestSession {
+                            scoreRing(for: session)
+                            statRow(for: session)
+                        } else {
+                            emptyState
+                        }
                     }
+                    .transition(.opacity.combined(with: .scale(scale: 0.97)))
+                    .id(latestSession?.id)
 
                     trackingButton
                 }
                 .padding(20)
+                .animation(.easeInOut(duration: 0.3), value: latestSession?.id)
             }
             .background(Somna.ink.ignoresSafeArea())
             .navigationBarHidden(true)
@@ -49,9 +58,8 @@ struct HomeView: View {
                     Image(systemName: "alarm")
                         .foregroundStyle(Somna.textDim)
                 }
-                FreeTag()
             }
-            Text("İyi geceler, Tayfun")
+            Text("İyi geceler")
                 .font(.system(size: 12))
                 .foregroundStyle(Somna.textFaint)
         }
@@ -70,7 +78,7 @@ struct HomeView: View {
             Text("Henüz kayıtlı gece yok")
                 .font(.system(size: 15, weight: .medium))
                 .foregroundStyle(Somna.textPrimary)
-            Text("Uyumadan önce aşağıdaki düğmeye dokun, uyandığında tekrar dokun.")
+            Text("Uyumadan önce aşağıdaki düğmeye dokun, uyandığında tekrar dokun. Hedefin: \(SleepGoalCalculator.formatted(goalMinutes)).")
                 .font(.system(size: 12))
                 .foregroundStyle(Somna.textFaint)
         }
@@ -78,7 +86,7 @@ struct HomeView: View {
     }
 
     private func scoreRing(for session: SleepSession) -> some View {
-        let score = SleepScoreCalculator.score(for: session)
+        let score = SleepScoreCalculator.score(for: session, goalMinutes: goalMinutes)
         return HStack(spacing: 18) {
             ZStack {
                 Circle()
@@ -87,6 +95,7 @@ struct HomeView: View {
                     .trim(from: 0, to: CGFloat(score) / 100)
                     .stroke(Somna.amber, style: StrokeStyle(lineWidth: 8, lineCap: .round))
                     .rotationEffect(.degrees(-90))
+                    .animation(.easeOut(duration: 0.6), value: score)
                 Text("\(score)")
                     .font(Somna.Font.serif(22))
                     .foregroundStyle(Somna.textPrimary)
@@ -97,7 +106,7 @@ struct HomeView: View {
                 Text(SleepScoreCalculator.label(for: score))
                     .font(.system(size: 17, weight: .medium))
                     .foregroundStyle(Somna.textPrimary)
-                Text("Son kaydedilen gece")
+                Text("Hedef: \(SleepGoalCalculator.formatted(goalMinutes))")
                     .font(.system(size: 12))
                     .foregroundStyle(Somna.textFaint)
             }
@@ -116,7 +125,9 @@ struct HomeView: View {
 
     private var trackingButton: some View {
         Button {
-            toggleTracking()
+            withAnimation(.easeInOut(duration: 0.3)) {
+                toggleTracking()
+            }
         } label: {
             Text(isTracking ? "Uyandım" : "Uykuya dal")
                 .font(.system(size: 14, weight: .medium))
@@ -141,19 +152,6 @@ struct HomeView: View {
         } else {
             activeSleepStartRaw = Date.now.timeIntervalSince1970
         }
-    }
-}
-
-private struct FreeTag: View {
-    var body: some View {
-        Text("ÜCRETSİZ")
-            .font(.system(size: 10, weight: .medium))
-            .foregroundStyle(Somna.free)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 3)
-            .background(Somna.free.opacity(0.12))
-            .overlay(Capsule().strokeBorder(Somna.free.opacity(0.3), lineWidth: 0.5))
-            .clipShape(Capsule())
     }
 }
 
@@ -192,6 +190,6 @@ private struct StatCard: View {
 
 #Preview {
     HomeView()
-        .modelContainer(for: [SleepSession.self, Alarm.self], inMemory: true)
+        .modelContainer(for: [SleepSession.self, Alarm.self, UserProfile.self], inMemory: true)
         .preferredColorScheme(.dark)
 }

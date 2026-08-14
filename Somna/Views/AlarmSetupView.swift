@@ -5,13 +5,25 @@ struct AlarmSetupView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Query private var alarms: [Alarm]
+    @Query private var profiles: [UserProfile]
 
     @State private var time = Calendar.current.date(bySettingHour: 7, minute: 30, second: 0, of: .now) ?? .now
     @State private var isEnabled = true
     @State private var wakeWindowMinutes = 20.0
     @State private var missionEnabled = true
+    @State private var bedtimeReminderEnabled = true
 
     private var existingAlarm: Alarm? { alarms.first }
+    private var goalMinutes: Int {
+        SleepGoalCalculator.targetMinutes(forAge: profiles.first?.ageYears ?? 30)
+    }
+    private var bedtimeText: String {
+        let calendar = Calendar.current
+        guard let bedtime = calendar.date(byAdding: .minute, value: -(goalMinutes + 15), to: time) else { return "" }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        return formatter.string(from: bedtime)
+    }
 
     var body: some View {
         NavigationStack {
@@ -23,7 +35,7 @@ struct AlarmSetupView: View {
                 }
                 .listRowBackground(Somna.card)
 
-                Section("Uyandırma görevi — ücretsiz") {
+                Section("Uyandırma görevi") {
                     Toggle("Kamera görevi zorunlu", isOn: $missionEnabled)
                     VStack(alignment: .leading) {
                         Text("Akıllı uyandırma penceresi: \(Int(wakeWindowMinutes)) dk")
@@ -31,6 +43,16 @@ struct AlarmSetupView: View {
                             .foregroundStyle(Somna.textDim)
                         Slider(value: $wakeWindowMinutes, in: 0...45, step: 5)
                             .tint(Somna.amber)
+                    }
+                }
+                .listRowBackground(Somna.card)
+
+                Section("Yatma vakti hatırlatıcısı") {
+                    Toggle("Hatırlat", isOn: $bedtimeReminderEnabled)
+                    if bedtimeReminderEnabled {
+                        Text("Hedefin \(SleepGoalCalculator.formatted(goalMinutes)) — bu yüzden ~\(bedtimeText)'te hatırlatacağız.")
+                            .font(.system(size: 12))
+                            .foregroundStyle(Somna.textFaint)
                     }
                 }
                 .listRowBackground(Somna.card)
@@ -65,6 +87,7 @@ struct AlarmSetupView: View {
         isEnabled = alarm.isEnabled
         wakeWindowMinutes = Double(alarm.wakeWindowMinutes)
         missionEnabled = alarm.missionEnabled
+        bedtimeReminderEnabled = alarm.bedtimeReminderEnabled
     }
 
     private func save() {
@@ -73,13 +96,15 @@ struct AlarmSetupView: View {
         alarm.isEnabled = isEnabled
         alarm.wakeWindowMinutes = Int(wakeWindowMinutes)
         alarm.missionEnabled = missionEnabled
+        alarm.bedtimeReminderEnabled = bedtimeReminderEnabled
 
         if existingAlarm == nil {
             modelContext.insert(alarm)
         }
 
+        let goal = goalMinutes
         Task {
-            await NotificationScheduler.shared.schedule(alarm)
+            await NotificationScheduler.shared.schedule(alarm, goalMinutes: goal)
         }
         dismiss()
     }

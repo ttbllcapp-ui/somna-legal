@@ -20,16 +20,17 @@ kimliği sadece gerçek cihaza kurulum için gerekli.
 
 - `Somna/App` — uygulama giriş noktası (`SomnaApp.swift`)
 - `Somna/Theme` — renk paleti, tipografi, ortak view modifier'lar
-- `Somna/Views` — ekranlar: Bu gece (skor), Evreler, Sesler, Koç, Somna+
+- `Somna/Views` — ekranlar: Onboarding, Bu gece, İstatistik, Sesler, Koç, Ayarlar
 - `Somna/Resources` — Info.plist, Assets.xcassets
 
 ## Ürün yönü
 
-- **Ücretsiz katman**: uyku skoru, evreler, uyandırma görevi, uyku koçu (Health/Watch
-  entegrasyonlu), sınırsız kullanım.
-- **Somna+ (Pro)**: genişletilmiş ses kütüphanesi, uzun geçmiş + dışa aktarım,
-  özel uyandırma görevi fotoğrafları. Koç asla ücret duvarının arkasına
-  girmiyor — bu bilinçli bir ürün kararı.
+- **Tamamen ücretsiz** — hiçbir özellik kilitli değil, ücret duvarı yok.
+- **Kişiselleştirilmiş hedef**: onboarding'de yaş/boy/kilo/cinsiyet sorulur,
+  National Sleep Foundation'ın yaş bazlı süre önerilerinden kişiye özel bir
+  uyku hedefi hesaplanır (bkz. `Somna/Services/SleepGoalCalculator.swift`).
+- **Ayarlar** ekranında profil düzenleme ve Gizlilik/Kullanım Şartları/Sağlık
+  Bilgisi Açıklaması metinleri var.
 
 Bu proje [[feedback_project_isolation]] kuralı gereği tamamen izole: AquaPulse,
 Sound veya CastLane ile hiçbir dosya/kod paylaşmıyor.

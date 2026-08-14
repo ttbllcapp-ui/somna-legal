@@ -5,10 +5,10 @@ import SwiftData
 struct SomnaApp: App {
     var body: some Scene {
         WindowGroup {
-            RootTabView()
+            AppRootView()
                 .preferredColorScheme(.dark)
                 .tint(Somna.amber)
         }
-        .modelContainer(for: [SleepSession.self, Alarm.self])
+        .modelContainer(for: [SleepSession.self, Alarm.self, UserProfile.self])
     }
 }

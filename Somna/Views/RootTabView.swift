@@ -6,8 +6,8 @@ struct RootTabView: View {
             HomeView()
                 .tabItem { Label("Bu gece", systemImage: "moon.stars.fill") }
 
-            SleepStagesView()
-                .tabItem { Label("Evreler", systemImage: "chart.bar.fill") }
+            StatsView()
+                .tabItem { Label("İstatistik", systemImage: "chart.bar.fill") }
 
             SoundMixerView()
                 .tabItem { Label("Sesler", systemImage: "waveform") }
@@ -15,8 +15,8 @@ struct RootTabView: View {
             CoachView()
                 .tabItem { Label("Koç", systemImage: "bubble.left.and.bubble.right.fill") }
 
-            PlansView()
-                .tabItem { Label("Somna+", systemImage: "sparkles") }
+            SettingsView()
+                .tabItem { Label("Ayarlar", systemImage: "gearshape.fill") }
         }
         .background(Somna.ink.ignoresSafeArea())
     }
