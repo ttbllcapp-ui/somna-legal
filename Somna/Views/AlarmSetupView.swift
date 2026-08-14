@@ -12,6 +12,7 @@ struct AlarmSetupView: View {
     @State private var wakeWindowMinutes = 20.0
     @State private var missionEnabled = true
     @State private var bedtimeReminderEnabled = true
+    @State private var showMissionPreview = false
 
     private var existingAlarm: Alarm? { alarms.first }
     private var goalMinutes: Int {
@@ -29,28 +30,30 @@ struct AlarmSetupView: View {
         NavigationStack {
             Form {
                 Section {
-                    DatePicker("Uyanma saati", selection: $time, displayedComponents: .hourAndMinute)
+                    DatePicker("Wake-up time", selection: $time, displayedComponents: .hourAndMinute)
                         .datePickerStyle(.wheel)
-                    Toggle("Alarm açık", isOn: $isEnabled)
+                    Toggle("Alarm on", isOn: $isEnabled)
                 }
                 .listRowBackground(Somna.card)
 
-                Section("Uyandırma görevi") {
-                    Toggle("Kamera görevi zorunlu", isOn: $missionEnabled)
+                Section("Wake mission") {
+                    Toggle("Require camera mission", isOn: $missionEnabled)
                     VStack(alignment: .leading) {
-                        Text("Akıllı uyandırma penceresi: \(Int(wakeWindowMinutes)) dk")
+                        Text("Smart wake window: \(Int(wakeWindowMinutes)) min")
                             .font(.system(size: 13))
                             .foregroundStyle(Somna.textDim)
                         Slider(value: $wakeWindowMinutes, in: 0...45, step: 5)
                             .tint(Somna.amber)
                     }
+                    Button("Preview mission") { showMissionPreview = true }
+                        .foregroundStyle(Somna.amber)
                 }
                 .listRowBackground(Somna.card)
 
-                Section("Yatma vakti hatırlatıcısı") {
-                    Toggle("Hatırlat", isOn: $bedtimeReminderEnabled)
+                Section("Bedtime reminder") {
+                    Toggle("Remind me", isOn: $bedtimeReminderEnabled)
                     if bedtimeReminderEnabled {
-                        Text("Hedefin \(SleepGoalCalculator.formatted(goalMinutes)) — bu yüzden ~\(bedtimeText)'te hatırlatacağız.")
+                        Text("Your goal is \(SleepGoalCalculator.formatted(goalMinutes)) — so we'll remind you around \(bedtimeText).")
                             .font(.system(size: 12))
                             .foregroundStyle(Somna.textFaint)
                     }
@@ -58,7 +61,7 @@ struct AlarmSetupView: View {
                 .listRowBackground(Somna.card)
 
                 Section {
-                    Text("Şu an sabit saatte çalan yerel bir bildirim planlanıyor. Hafif uykuda erken uyandıran sensör tabanlı akıllı alarm henüz eklenmedi.")
+                    Text("This schedules a plain notification at a fixed time. The sensor-driven smart alarm that wakes you early during light sleep isn't built yet.")
                         .font(.system(size: 12))
                         .foregroundStyle(Somna.textFaint)
                 }
@@ -70,14 +73,17 @@ struct AlarmSetupView: View {
             .toolbarBackground(Somna.ink, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Kaydet") { save() }
+                    Button("Save") { save() }
                         .foregroundStyle(Somna.amber)
                 }
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Vazgeç") { dismiss() }
+                    Button("Cancel") { dismiss() }
                 }
             }
             .onAppear(perform: loadExisting)
+            .sheet(isPresented: $showMissionPreview) {
+                WakeMissionView()
+            }
         }
     }
 

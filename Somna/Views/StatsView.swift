@@ -3,9 +3,9 @@ import SwiftData
 import Charts
 
 private enum StatsPeriod: String, CaseIterable {
-    case day = "Gün"
-    case week = "Hafta"
-    case month = "Ay"
+    case day = "Day"
+    case week = "Week"
+    case month = "Month"
 }
 
 struct StatsView: View {
@@ -18,7 +18,7 @@ struct StatsView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    Picker("Dönem", selection: $period.animation(.easeInOut)) {
+                    Picker("Period", selection: $period.animation(.easeInOut)) {
                         ForEach(StatsPeriod.allCases, id: \.self) { Text($0.rawValue) }
                     }
                     .pickerStyle(.segmented)
@@ -35,7 +35,7 @@ struct StatsView: View {
                 .padding(20)
             }
             .background(Somna.ink.ignoresSafeArea())
-            .navigationTitle("İstatistik")
+            .navigationTitle("Stats")
             .toolbarBackground(Somna.ink, for: .navigationBar)
         }
     }
@@ -53,10 +53,10 @@ struct StatsView: View {
 
     private var emptyState: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("Henüz kayıtlı gece yok")
+            Text("No nights logged yet")
                 .font(.system(size: 15, weight: .medium))
                 .foregroundStyle(Somna.textPrimary)
-            Text("Bu gece sekmesinden \"Uykuya dal\" ile ilk kaydını oluştur.")
+            Text("Start your first record from the Tonight tab with \"Going to sleep\".")
                 .font(.system(size: 12))
                 .foregroundStyle(Somna.textFaint)
         }
@@ -72,7 +72,7 @@ struct StatsView: View {
         }()
 
         return VStack(alignment: .leading, spacing: 18) {
-            Text("Bu gece · \(timeFormatter.string(from: session.startDate)) – \(timeFormatter.string(from: session.endDate))")
+            Text("Last night · \(timeFormatter.string(from: session.startDate)) – \(timeFormatter.string(from: session.endDate))")
                 .font(.system(size: 11, weight: .medium))
                 .foregroundStyle(Somna.textFaint)
                 .textCase(.uppercase)
@@ -86,6 +86,7 @@ struct StatsView: View {
             }
             .frame(height: 24)
             .clipShape(RoundedRectangle(cornerRadius: 7))
+            .shadow(color: .black.opacity(0.3), radius: 8, x: 0, y: 4)
 
             VStack(spacing: 10) {
                 ForEach(session.stageMinutes, id: \.stage) { entry in
@@ -99,9 +100,9 @@ struct StatsView: View {
                         }
                         Spacer()
                         HStack(spacing: 6) {
-                            Text("\(entry.minutes / 60)s \(entry.minutes % 60)d")
+                            Text("\(entry.minutes / 60)h \(entry.minutes % 60)m")
                                 .foregroundStyle(Somna.textPrimary)
-                            Text("%\(Int(Double(entry.minutes) / Double(total) * 100))")
+                            Text("\(Int(Double(entry.minutes) / Double(total) * 100))%")
                                 .font(.system(size: 10))
                                 .foregroundStyle(Somna.textFaint)
                         }
@@ -110,7 +111,7 @@ struct StatsView: View {
                 }
             }
 
-            Text("Evre dağılımı, ölçülen toplam süreden tahmin ediliyor — hareket/ses tabanlı gerçek algılama henüz eklenmedi.")
+            Text("Stage breakdown is estimated from total measured duration — real motion/audio-based detection isn't built yet.")
                 .font(.system(size: 11))
                 .foregroundStyle(Somna.textFaint)
         }
@@ -143,7 +144,7 @@ struct StatsView: View {
         return VStack(alignment: .leading, spacing: 14) {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Ortalama uyku")
+                    Text("Average sleep")
                         .font(.system(size: 11))
                         .foregroundStyle(Somna.textFaint)
                     Text(SleepGoalCalculator.formatted(average))
@@ -151,7 +152,7 @@ struct StatsView: View {
                         .foregroundStyle(Somna.textPrimary)
                 }
                 Spacer()
-                Text("\(points.count) gece kayıtlı")
+                Text("\(points.count) nights logged")
                     .font(.system(size: 11))
                     .foregroundStyle(Somna.textFaint)
             }
@@ -161,10 +162,12 @@ struct StatsView: View {
             } else {
                 Chart(points) { point in
                     BarMark(
-                        x: .value("Gün", point.day, unit: .day),
-                        y: .value("Dakika", point.asleepMinutes)
+                        x: .value("Day", point.day, unit: .day),
+                        y: .value("Minutes", point.asleepMinutes)
                     )
-                    .foregroundStyle(Somna.amber)
+                    .foregroundStyle(
+                        LinearGradient(colors: [Somna.amber, Somna.amberDeep], startPoint: .top, endPoint: .bottom)
+                    )
                     .cornerRadius(4)
                 }
                 .frame(height: 180)

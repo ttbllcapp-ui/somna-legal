@@ -15,34 +15,34 @@ struct SoundMixerView: View {
     }
 
     @State private var categories: [Category] = [
-        Category(name: "Yağmur ve fırtına", sounds: [
-            Sound(name: "Hafif yağmur", icon: "cloud.drizzle", level: 0.7),
-            Sound(name: "Sağanak", icon: "cloud.heavyrain", level: 0),
-            Sound(name: "Uzak gök gürültüsü", icon: "cloud.bolt", level: 0),
-            Sound(name: "Cam damlaları", icon: "drop", level: 0)
+        Category(name: "Rain & storm", sounds: [
+            Sound(name: "Light rain", icon: "cloud.drizzle", level: 0.7),
+            Sound(name: "Heavy rain", icon: "cloud.heavyrain", level: 0),
+            Sound(name: "Distant thunder", icon: "cloud.bolt", level: 0),
+            Sound(name: "Rain on glass", icon: "drop", level: 0)
         ]),
-        Category(name: "Doğa", sounds: [
-            Sound(name: "Orman gecesi", icon: "leaf", level: 0.35),
-            Sound(name: "Rüzgar", icon: "wind", level: 0),
-            Sound(name: "Dalgalar", icon: "water.waves", level: 0),
-            Sound(name: "Kamp ateşi", icon: "flame", level: 0),
-            Sound(name: "Cırcır böcekleri", icon: "ladybug", level: 0)
+        Category(name: "Nature", sounds: [
+            Sound(name: "Forest night", icon: "leaf", level: 0.35),
+            Sound(name: "Wind", icon: "wind", level: 0),
+            Sound(name: "Ocean waves", icon: "water.waves", level: 0),
+            Sound(name: "Campfire", icon: "flame", level: 0),
+            Sound(name: "Crickets", icon: "ladybug", level: 0)
         ]),
-        Category(name: "Beyaz / pembe gürültü", sounds: [
-            Sound(name: "Beyaz gürültü", icon: "waveform", level: 0),
-            Sound(name: "Pembe gürültü", icon: "waveform.path", level: 0),
-            Sound(name: "Kahverengi gürültü", icon: "waveform.path.ecg", level: 0),
-            Sound(name: "Vantilatör", icon: "fanblades", level: 0)
+        Category(name: "White & pink noise", sounds: [
+            Sound(name: "White noise", icon: "waveform", level: 0),
+            Sound(name: "Pink noise", icon: "waveform.path", level: 0),
+            Sound(name: "Brown noise", icon: "waveform.path.ecg", level: 0),
+            Sound(name: "Fan", icon: "fanblades", level: 0)
         ]),
-        Category(name: "Enstrümantal", sounds: [
-            Sound(name: "Piyano ninnisi", icon: "pianokeys", level: 0),
-            Sound(name: "Tekil synth pad", icon: "music.note", level: 0),
-            Sound(name: "Tibet çanağı", icon: "circle.dotted", level: 0)
+        Category(name: "Instrumental", sounds: [
+            Sound(name: "Piano lullaby", icon: "pianokeys", level: 0),
+            Sound(name: "Ambient synth pad", icon: "music.note", level: 0),
+            Sound(name: "Tibetan bowl", icon: "circle.dotted", level: 0)
         ]),
-        Category(name: "Şehir ve mekan", sounds: [
-            Sound(name: "Uzak trafik", icon: "car", level: 0),
-            Sound(name: "Kafe uğultusu", icon: "cup.and.saucer", level: 0),
-            Sound(name: "Tren yolculuğu", icon: "tram", level: 0)
+        Category(name: "City & places", sounds: [
+            Sound(name: "Distant traffic", icon: "car", level: 0),
+            Sound(name: "Café murmur", icon: "cup.and.saucer", level: 0),
+            Sound(name: "Train ride", icon: "tram", level: 0)
         ])
     ]
 
@@ -65,7 +65,7 @@ struct SoundMixerView: View {
                 .padding(20)
             }
             .background(Somna.ink.ignoresSafeArea())
-            .navigationTitle("Sesler")
+            .navigationTitle("Sounds")
             .toolbarBackground(Somna.ink, for: .navigationBar)
         }
     }

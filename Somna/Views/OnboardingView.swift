@@ -44,24 +44,24 @@ struct OnboardingView: View {
             Text("Somna")
                 .font(Somna.Font.serif(40))
                 .foregroundStyle(Somna.textPrimary)
-            Text("Sana özel bir uyku hedefi belirlemek için birkaç şey soralım — yaşına göre bilimsel olarak önerilen süreyi hesaplayacağız.")
+            Text("Let's ask a few things so we can set a sleep goal that's actually yours — based on the science of what your age needs.")
                 .font(.system(size: 15))
                 .foregroundStyle(Somna.textDim)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer()
-            nextButton("Başla")
+            nextButton("Get started")
         }
         .padding(24)
     }
 
     private var profileStep: some View {
         VStack(alignment: .leading, spacing: 22) {
-            Text("Biraz seni tanıyalım")
+            Text("A little about you")
                 .font(Somna.Font.serif(24))
                 .foregroundStyle(Somna.textPrimary)
 
             VStack(alignment: .leading, spacing: 8) {
-                Text("Doğum tarihi").font(.system(size: 13)).foregroundStyle(Somna.textFaint)
+                Text("Date of birth").font(.system(size: 13)).foregroundStyle(Somna.textFaint)
                 DatePicker("", selection: $birthDate, displayedComponents: .date)
                     .datePickerStyle(.compact)
                     .labelsHidden()
@@ -70,7 +70,7 @@ struct OnboardingView: View {
 
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
-                    Text("Boy").font(.system(size: 13)).foregroundStyle(Somna.textFaint)
+                    Text("Height").font(.system(size: 13)).foregroundStyle(Somna.textFaint)
                     Spacer()
                     Text("\(Int(heightCM)) cm").font(Somna.Font.mono(13)).foregroundStyle(Somna.textPrimary)
                 }
@@ -79,7 +79,7 @@ struct OnboardingView: View {
 
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
-                    Text("Kilo").font(.system(size: 13)).foregroundStyle(Somna.textFaint)
+                    Text("Weight").font(.system(size: 13)).foregroundStyle(Somna.textFaint)
                     Spacer()
                     Text("\(Int(weightKG)) kg").font(Somna.Font.mono(13)).foregroundStyle(Somna.textPrimary)
                 }
@@ -87,7 +87,7 @@ struct OnboardingView: View {
             }
 
             VStack(alignment: .leading, spacing: 8) {
-                Text("Cinsiyet").font(.system(size: 13)).foregroundStyle(Somna.textFaint)
+                Text("Sex").font(.system(size: 13)).foregroundStyle(Somna.textFaint)
                 Picker("", selection: $sex) {
                     ForEach(BiologicalSex.allCases, id: \.self) { option in
                         Text(option.label).tag(option)
@@ -97,7 +97,7 @@ struct OnboardingView: View {
             }
 
             Spacer()
-            nextButton("Devam")
+            nextButton("Continue")
         }
         .padding(24)
     }
@@ -108,14 +108,27 @@ struct OnboardingView: View {
 
         return VStack(alignment: .leading, spacing: 16) {
             Spacer()
-            Text("Sana özel hedef")
+            Text("Your personal goal")
                 .font(.system(size: 12, weight: .medium))
                 .foregroundStyle(Somna.textFaint)
                 .textCase(.uppercase)
-            Text(SleepGoalCalculator.formatted(targetMinutes))
-                .font(Somna.Font.serif(48))
-                .foregroundStyle(Somna.amber)
-            Text("\(age) yaşındaki bir yetişkin için önerilen aralık \(range.lowerBound / 60)–\(range.upperBound / 60) saat. National Sleep Foundation'ın 2015 uzman panel önerisine dayanıyor.")
+
+            HStack(spacing: 16) {
+                ZStack {
+                    Circle().stroke(Somna.hair, lineWidth: 6)
+                    Circle()
+                        .trim(from: 0, to: 0.8)
+                        .stroke(Somna.scoreGradient, style: StrokeStyle(lineWidth: 6, lineCap: .round))
+                        .rotationEffect(.degrees(-126))
+                }
+                .frame(width: 64, height: 64)
+
+                Text(SleepGoalCalculator.formatted(targetMinutes))
+                    .font(Somna.Font.serif(44))
+                    .foregroundStyle(Somna.textPrimary)
+            }
+
+            Text("The recommended range for a \(age)-year-old is \(range.lowerBound / 60)–\(range.upperBound / 60) hours, based on the National Sleep Foundation's 2015 expert panel report.")
                 .font(.system(size: 13))
                 .foregroundStyle(Somna.textDim)
                 .fixedSize(horizontal: false, vertical: true)
@@ -127,13 +140,13 @@ struct OnboardingView: View {
                     .padding(.top, 4)
             }
 
-            Text("Bu bir tıbbi tavsiye değildir. Detaylar için Ayarlar > Sağlık Bilgisi Açıklaması.")
+            Text("This is general guidance, not medical advice, and isn't a diagnosis. See Settings > Health Disclosure for details, and check with a doctor about your personal sleep needs.")
                 .font(.system(size: 11))
                 .foregroundStyle(Somna.textFaint)
                 .padding(.top, 8)
 
             Spacer()
-            nextButton("Somna'yı kullanmaya başla") { finish() }
+            nextButton("Start using Somna") { finish() }
         }
         .padding(24)
     }
@@ -151,7 +164,9 @@ struct OnboardingView: View {
                 .foregroundStyle(Somna.ink)
                 .background(Somna.amber)
                 .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .amberGlow()
         }
+        .buttonStyle(PressableButtonStyle())
     }
 
     private func finish() {

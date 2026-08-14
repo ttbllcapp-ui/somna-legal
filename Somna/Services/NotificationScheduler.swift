@@ -51,8 +51,8 @@ final class NotificationScheduler: NSObject, UNUserNotificationCenterDelegate {
         let content = UNMutableNotificationContent()
         content.title = "Somna"
         content.body = alarm.missionEnabled
-            ? "Uyanma vakti. Alarmı susturmak için görevi tamamla."
-            : "Uyanma vakti."
+            ? "Time to wake up. Complete the mission to stop the alarm."
+            : "Time to wake up."
         content.sound = .default
         content.categoryIdentifier = NotificationCategory.alarm
 
@@ -71,7 +71,7 @@ final class NotificationScheduler: NSObject, UNUserNotificationCenterDelegate {
 
         let content = UNMutableNotificationContent()
         content.title = "Somna"
-        content.body = "Yatma vakti yaklaştı — hedefin \(SleepGoalCalculator.formatted(goalMinutes))."
+        content.body = "Bedtime is coming up — your goal is \(SleepGoalCalculator.formatted(goalMinutes))."
         content.sound = .default
         content.categoryIdentifier = NotificationCategory.bedtime
 

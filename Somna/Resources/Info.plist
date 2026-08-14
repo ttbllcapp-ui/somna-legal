@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>tr</string>
+	<string>en</string>
 	<key>CFBundleDisplayName</key>
 	<string>Somna</string>
 	<key>CFBundleExecutable</key>
@@ -23,13 +23,13 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSHealthShareUsageDescription</key>
-	<string>Somna, uyku skorunu ve evrelerini hesaplamak için Sağlık verilerini okur.</string>
+	<string>Somna reads Health data to calculate your sleep score and stage breakdown.</string>
 	<key>NSHealthUpdateUsageDescription</key>
-	<string>Somna, kaydettiğin uyku oturumlarını Sağlık uygulamasına yazar.</string>
+	<string>Somna writes the sleep sessions you log back to the Health app.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Somna, uyandırma görevinde eşleşecek nesneyi tanımak için kamerayı kullanır.</string>
+	<string>Somna uses the camera to recognize the object you match for the wake mission.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Somna, horlama ve gece seslerini tespit etmek için mikrofonu kullanır.</string>
+	<string>Somna uses the microphone to detect snoring and other nighttime sounds.</string>
 	<key>UILaunchScreen</key>
 	<dict/>
 	<key>UISupportedInterfaceOrientations</key>

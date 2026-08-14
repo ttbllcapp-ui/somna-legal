@@ -11,40 +11,40 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 if let profile {
-                    Section("Profil") {
-                        LabeledContent("Yaş", value: "\(profile.ageYears)")
-                        LabeledContent("Boy", value: "\(profile.heightCM) cm")
-                        LabeledContent("Kilo", value: "\(Int(profile.weightKG)) kg")
-                        LabeledContent("Cinsiyet", value: profile.sex.label)
-                        LabeledContent("Uyku hedefin", value: SleepGoalCalculator.formatted(SleepGoalCalculator.targetMinutes(forAge: profile.ageYears)))
-                        Button("Profili düzenle") { showProfileEdit = true }
+                    Section("Profile") {
+                        LabeledContent("Age", value: "\(profile.ageYears)")
+                        LabeledContent("Height", value: "\(profile.heightCM) cm")
+                        LabeledContent("Weight", value: "\(Int(profile.weightKG)) kg")
+                        LabeledContent("Sex", value: profile.sex.label)
+                        LabeledContent("Your sleep goal", value: SleepGoalCalculator.formatted(SleepGoalCalculator.targetMinutes(forAge: profile.ageYears)))
+                        Button("Edit profile") { showProfileEdit = true }
                             .foregroundStyle(Somna.amber)
                     }
                     .listRowBackground(Somna.card)
                 }
 
-                Section("Uygulama") {
-                    LabeledContent("Fiyatlandırma", value: "Tamamen ücretsiz")
-                    LabeledContent("Sürüm", value: "1.0.0")
+                Section("App") {
+                    LabeledContent("Pricing", value: "Completely free")
+                    LabeledContent("Version", value: "1.0.0")
                 }
                 .listRowBackground(Somna.card)
 
-                Section("Kurallar ve politikalar") {
-                    NavigationLink("Gizlilik Politikası") {
-                        PolicyDetailView(title: "Gizlilik Politikası", text: PolicyText.privacy)
+                Section("Rules & policies") {
+                    NavigationLink("Privacy Policy") {
+                        PolicyDetailView(title: "Privacy Policy", text: PolicyText.privacy)
                     }
-                    NavigationLink("Kullanım Şartları") {
-                        PolicyDetailView(title: "Kullanım Şartları", text: PolicyText.terms)
+                    NavigationLink("Terms of Use") {
+                        PolicyDetailView(title: "Terms of Use", text: PolicyText.terms)
                     }
-                    NavigationLink("Sağlık Bilgisi Açıklaması") {
-                        PolicyDetailView(title: "Sağlık Bilgisi Açıklaması", text: PolicyText.healthDisclaimer)
+                    NavigationLink("Health Disclosure") {
+                        PolicyDetailView(title: "Health Disclosure", text: PolicyText.healthDisclaimer)
                     }
                 }
                 .listRowBackground(Somna.card)
             }
             .scrollContentBackground(.hidden)
             .background(Somna.ink.ignoresSafeArea())
-            .navigationTitle("Ayarlar")
+            .navigationTitle("Settings")
             .toolbarBackground(Somna.ink, for: .navigationBar)
             .sheet(isPresented: $showProfileEdit) {
                 if let profile {
@@ -62,17 +62,17 @@ private struct ProfileEditView: View {
     var body: some View {
         NavigationStack {
             Form {
-                DatePicker("Doğum tarihi", selection: $profile.birthDate, displayedComponents: .date)
-                Stepper("Boy: \(profile.heightCM) cm", value: $profile.heightCM, in: 100...220)
-                Stepper("Kilo: \(Int(profile.weightKG)) kg", value: $profile.weightKG, in: 30...200)
-                Picker("Cinsiyet", selection: $profile.sex) {
+                DatePicker("Date of birth", selection: $profile.birthDate, displayedComponents: .date)
+                Stepper("Height: \(profile.heightCM) cm", value: $profile.heightCM, in: 100...220)
+                Stepper("Weight: \(Int(profile.weightKG)) kg", value: $profile.weightKG, in: 30...200)
+                Picker("Sex", selection: $profile.sex) {
                     ForEach(BiologicalSex.allCases, id: \.self) { Text($0.label).tag($0) }
                 }
             }
-            .navigationTitle("Profili düzenle")
+            .navigationTitle("Edit profile")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Kapat") { dismiss() }
+                    Button("Done") { dismiss() }
                 }
             }
         }
@@ -99,29 +99,29 @@ private struct PolicyDetailView: View {
 
 private enum PolicyText {
     static let privacy = """
-    Somna, uyku verilerini (uyuma/uyanma saatleri, tahmini evre dağılımı) cihazında saklar. Bu veriler şu an için hiçbir sunucuya gönderilmiyor veya üçüncü taraflarla paylaşılmıyor.
+    Somna stores your sleep data (sleep/wake times, estimated stage breakdown) on your device. This data isn't sent to any server or shared with third parties.
 
-    Apple Health entegrasyonu açıksa, izin verdiğin veriler yalnızca uyku skorunu hesaplamak için okunur; Somna, Health verilerini kendi sunucularına aktarmaz.
+    If Apple Health integration is on, the data you permit is read only to compute your sleep score — Somna doesn't upload Health data to its own servers.
 
-    Kamera, uyandırma görevinde nesne eşleştirmek için kullanılır; hiçbir görüntü kaydedilmez veya saklanmaz. Mikrofon, horlama/ses tespiti için kullanılır; kayıtlar cihazında kalır.
+    The camera is used to match an object for the wake mission; no image is recorded or stored. The microphone is used for snore/sound detection; recordings stay on your device.
 
-    Profilinde girdiğin yaş, boy, kilo ve cinsiyet bilgisi sadece sana özel uyku hedefini hesaplamak için kullanılır ve cihazından çıkmaz.
+    The age, height, weight, and sex you enter in your profile are used only to calculate your personal sleep goal, and never leave your device.
     """
 
     static let terms = """
-    Somna'yı kullanarak, uygulamanın sağladığı skor, öneri ve hatırlatmaların bilgilendirme amaçlı olduğunu, tıbbi teşhis veya tedavi yerine geçmediğini kabul edersin.
+    By using Somna, you agree that the scores, suggestions, and reminders it provides are for informational purposes only and are not a substitute for professional medical diagnosis or treatment.
 
-    Uygulama şu an tamamen ücretsizdir; hiçbir özellik ücret duvarının arkasında değildir.
+    Somna is currently completely free — no feature is behind a paywall.
 
-    Uygulamayı kötüye kullanım (ör. tersine mühendislik, yeniden dağıtım) dışında istediğin gibi kullanabilirsin.
+    You may use the app as you like, other than misuse such as reverse engineering or redistribution.
     """
 
     static let healthDisclaimer = """
-    Somna'daki uyku hedefi önerileri, National Sleep Foundation'ın 2015 uzman panel raporundaki yaş bazlı süre aralıklarına dayanır. Bu bilimsel bir genel kılavuzdur — kişisel tıbbi tavsiye değildir.
+    Somna's sleep-goal suggestions are based on the age-based duration ranges in the National Sleep Foundation's 2015 expert panel report (Hirshkowitz et al., Sleep Health). This is general scientific guidance — not personal medical advice, and not a diagnosis.
 
-    Uyku apnesi, kronik uykusuzluk veya başka bir uyku bozukluğundan şüpheleniyorsan, bir sağlık uzmanına danış. Somna bu durumları teşhis edemez ve tedavi öneremez.
+    If you suspect sleep apnea, chronic insomnia, or another sleep disorder, talk to a healthcare professional. Somna cannot diagnose these conditions or prescribe treatment for them.
 
-    Uyku evresi tahminleri (derin/hafif/REM), şu an ölçülen toplam süreden istatistiksel bir tahminle hesaplanıyor — klinik düzeyde doğruluk iddia etmiyoruz.
+    Sleep stage estimates (deep/light/REM) are currently calculated with a statistical estimate from total measured duration — we don't claim clinical-grade accuracy. Sleep score and coach replies are generated on-device from that same data.
     """
 }
 

@@ -4,20 +4,21 @@ struct RootTabView: View {
     var body: some View {
         TabView {
             HomeView()
-                .tabItem { Label("Bu gece", systemImage: "moon.stars.fill") }
+                .tabItem { Label("Tonight", systemImage: "moon.stars.fill") }
 
             StatsView()
-                .tabItem { Label("İstatistik", systemImage: "chart.bar.fill") }
+                .tabItem { Label("Stats", systemImage: "chart.bar.fill") }
 
             SoundMixerView()
-                .tabItem { Label("Sesler", systemImage: "waveform") }
+                .tabItem { Label("Sounds", systemImage: "waveform") }
 
             CoachView()
-                .tabItem { Label("Koç", systemImage: "bubble.left.and.bubble.right.fill") }
+                .tabItem { Label("Coach", systemImage: "bubble.left.and.bubble.right.fill") }
 
             SettingsView()
-                .tabItem { Label("Ayarlar", systemImage: "gearshape.fill") }
+                .tabItem { Label("Settings", systemImage: "gearshape.fill") }
         }
+        .tint(Somna.amber)
         .background(Somna.ink.ignoresSafeArea())
     }
 }

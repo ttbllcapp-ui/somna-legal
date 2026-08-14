@@ -57,9 +57,12 @@ struct HomeView: View {
                 } label: {
                     Image(systemName: "alarm")
                         .foregroundStyle(Somna.textDim)
+                        .font(.system(size: 17))
+                        .minTapTarget()
                 }
+                .buttonStyle(PressableButtonStyle())
             }
-            Text("İyi geceler")
+            Text("Good evening")
                 .font(.system(size: 12))
                 .foregroundStyle(Somna.textFaint)
         }
@@ -67,18 +70,18 @@ struct HomeView: View {
 
     private var integrationRow: some View {
         HStack(spacing: 8) {
-            IntegrationPill(label: "Health senkron")
-            IntegrationPill(label: "Watch bağlı")
+            IntegrationPill(label: "Health synced")
+            IntegrationPill(label: "Watch connected")
             Spacer()
         }
     }
 
     private var emptyState: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("Henüz kayıtlı gece yok")
+            Text("No nights logged yet")
                 .font(.system(size: 15, weight: .medium))
                 .foregroundStyle(Somna.textPrimary)
-            Text("Uyumadan önce aşağıdaki düğmeye dokun, uyandığında tekrar dokun. Hedefin: \(SleepGoalCalculator.formatted(goalMinutes)).")
+            Text("Tap the button below before you sleep, then tap it again when you wake up. Your goal: \(SleepGoalCalculator.formatted(goalMinutes)).")
                 .font(.system(size: 12))
                 .foregroundStyle(Somna.textFaint)
         }
@@ -93,7 +96,7 @@ struct HomeView: View {
                     .stroke(Somna.hair, lineWidth: 8)
                 Circle()
                     .trim(from: 0, to: CGFloat(score) / 100)
-                    .stroke(Somna.amber, style: StrokeStyle(lineWidth: 8, lineCap: .round))
+                    .stroke(Somna.scoreGradient, style: StrokeStyle(lineWidth: 8, lineCap: .round))
                     .rotationEffect(.degrees(-90))
                     .animation(.easeOut(duration: 0.6), value: score)
                 Text("\(score)")
@@ -101,12 +104,13 @@ struct HomeView: View {
                     .foregroundStyle(Somna.textPrimary)
             }
             .frame(width: 92, height: 92)
+            .amberGlow(radius: 16, opacity: 0.15)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(SleepScoreCalculator.label(for: score))
                     .font(.system(size: 17, weight: .medium))
                     .foregroundStyle(Somna.textPrimary)
-                Text("Hedef: \(SleepGoalCalculator.formatted(goalMinutes))")
+                Text("Goal: \(SleepGoalCalculator.formatted(goalMinutes))")
                     .font(.system(size: 12))
                     .foregroundStyle(Somna.textFaint)
             }
@@ -118,8 +122,8 @@ struct HomeView: View {
         let minutes = session.asleepMinutes % 60
         let efficiencyPercent = Int((session.efficiency * 100).rounded())
         return HStack(spacing: 10) {
-            StatCard(label: "Uyku süresi", value: "\(hours)s \(minutes)d")
-            StatCard(label: "Verimlilik", value: "%\(efficiencyPercent)")
+            StatCard(label: "Time asleep", value: "\(hours)h \(minutes)m")
+            StatCard(label: "Efficiency", value: "\(efficiencyPercent)%")
         }
     }
 
@@ -129,7 +133,7 @@ struct HomeView: View {
                 toggleTracking()
             }
         } label: {
-            Text(isTracking ? "Uyandım" : "Uykuya dal")
+            Text(isTracking ? "I'm awake" : "Going to sleep")
                 .font(.system(size: 14, weight: .medium))
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
@@ -140,7 +144,9 @@ struct HomeView: View {
                         .strokeBorder(isTracking ? .clear : Somna.hair, lineWidth: 0.5)
                 )
                 .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .amberGlow(opacity: isTracking ? 0.2 : 0)
         }
+        .buttonStyle(PressableButtonStyle())
     }
 
     private func toggleTracking() {

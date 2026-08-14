@@ -1,11 +1,17 @@
 import Foundation
 
 /// Age-based sleep duration targets from the National Sleep Foundation's
-/// 2015 panel recommendations (Hirshkowitz et al., Sleep Health journal).
-/// Weight/height are collected for the profile and BMI-based context tips,
-/// but NSF ties recommended *duration* to age, not body composition — we
-/// don't invent a weight-adjusted hour formula that doesn't exist in the
-/// literature.
+/// 2015 panel recommendations (Hirshkowitz et al., "National Sleep
+/// Foundation's sleep time duration recommendations: methodology and
+/// results summary", Sleep Health, 2015). Weight/height are collected for
+/// the profile and BMI-based context tips, but NSF ties recommended
+/// *duration* to age, not body composition — we don't invent a
+/// weight-adjusted hour formula that doesn't exist in the literature.
+///
+/// This is general wellness guidance, not medical advice or a diagnosis —
+/// see SettingsView's Health Disclosure and Apple App Store Review
+/// Guideline 1.4.1 (health apps must disclose methodology and encourage
+/// consulting a doctor rather than presenting as clinical measurement).
 enum SleepGoalCalculator {
     static func recommendedRangeMinutes(forAge age: Int) -> ClosedRange<Int> {
         switch age {
@@ -25,16 +31,16 @@ enum SleepGoalCalculator {
     }
 
     static func formatted(_ minutes: Int) -> String {
-        "\(minutes / 60)s \(minutes % 60)d"
+        "\(minutes / 60)h \(minutes % 60)m"
     }
 
     /// A light, non-diagnostic context note. Not medical advice — see
-    /// SettingsView's "Sağlık Bilgisi Açıklaması".
+    /// SettingsView's "Health Disclosure".
     static func bmiNote(_ bmi: Double) -> String? {
         guard bmi > 0 else { return nil }
         switch bmi {
-        case ..<18.5: return "Düşük BMI bazen uyku düzenini etkileyebilir."
-        case 30...: return "Yüksek BMI, uyku apnesi riskiyle ilişkilendirilir — horlama sık oluyorsa bir uzmana danışmanı öneririz."
+        case ..<18.5: return "A lower BMI can sometimes affect sleep patterns — worth mentioning at your next checkup."
+        case 30...: return "Higher BMI is one of several factors associated with sleep apnea risk. If you snore heavily or often feel unrested, it's worth discussing with a doctor."
         default: return nil
         }
     }

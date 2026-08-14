@@ -6,9 +6,9 @@ enum BiologicalSex: String, Codable, CaseIterable {
 
     var label: String {
         switch self {
-        case .female: return "Kadın"
-        case .male: return "Erkek"
-        case .unspecified: return "Belirtmek istemiyorum"
+        case .female: return "Female"
+        case .male: return "Male"
+        case .unspecified: return "Prefer not to say"
         }
     }
 }
