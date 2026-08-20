@@ -18,11 +18,11 @@ struct RootTabView: View {
             SettingsView()
                 .tabItem { Label("Settings", systemImage: "gearshape.fill") }
         }
-        .tint(Somna.amber)
+        .tint(Somna.accent)
         .background(Somna.backdrop)
     }
 }
 
 #Preview {
-    RootTabView().preferredColorScheme(.dark)
+    RootTabView().preferredColorScheme(.light)
 }

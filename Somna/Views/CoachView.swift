@@ -23,16 +23,11 @@ struct CoachView: View {
         NavigationStack {
             VStack(spacing: 0) {
                 HStack {
-                    Text("Sleep coach")
-                        .font(Somna.Font.serif(15))
-                        .foregroundStyle(Somna.textDim)
+                    Text("SLEEP COACH")
+                        .font(Somna.Font.heavy(18))
+                        .foregroundStyle(Somna.textPrimary)
                     Spacer()
-                    Text("FREE")
-                        .font(.system(size: 10, weight: .medium))
-                        .foregroundStyle(Somna.free)
-                        .padding(.horizontal, 8).padding(.vertical, 3)
-                        .background(Somna.free.opacity(0.12))
-                        .clipShape(Capsule())
+                    TagPill(text: "FREE", color: Somna.success)
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 12)
@@ -64,23 +59,23 @@ struct CoachView: View {
 
                 HStack(spacing: 10) {
                     TextField("Ask Somna…", text: $draft)
-                        .font(.system(size: 13))
+                        .font(.system(size: 14))
                         .foregroundStyle(Somna.textPrimary)
                         .onSubmit(send)
                     Button(action: send) {
                         Image(systemName: "arrow.up.circle.fill")
-                            .font(.system(size: 22))
-                            .foregroundStyle(draft.trimmingCharacters(in: .whitespaces).isEmpty ? Somna.textFaint : Somna.amber)
+                            .font(.system(size: 24))
+                            .foregroundStyle(draft.trimmingCharacters(in: .whitespaces).isEmpty ? Somna.textFaint : Somna.accent)
                             .minTapTarget()
                     }
                     .buttonStyle(PressableButtonStyle())
                     .disabled(draft.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
-                .padding(.leading, 12)
-                .padding(.trailing, 4)
+                .padding(.leading, 16)
+                .padding(.trailing, 6)
                 .background(Somna.card)
-                .overlay(Capsule().strokeBorder(Somna.hair, lineWidth: 0.5))
                 .clipShape(Capsule())
+                .shadow(color: .black.opacity(0.07), radius: 10, x: 0, y: 4)
                 .padding(20)
             }
             .background(Somna.backdrop)
@@ -97,11 +92,13 @@ struct CoachView: View {
                         send()
                     } label: {
                         Text(suggestion)
-                            .font(.system(size: 12))
+                            .font(Somna.Font.bold(12))
                             .foregroundStyle(Somna.textDim)
                             .padding(.horizontal, 12)
-                            .padding(.vertical, 7)
-                            .overlay(Capsule().strokeBorder(Somna.hair, lineWidth: 0.5))
+                            .padding(.vertical, 8)
+                            .background(Somna.card)
+                            .clipShape(Capsule())
+                            .shadow(color: .black.opacity(0.05), radius: 6, x: 0, y: 3)
                     }
                     .buttonStyle(PressableButtonStyle())
                 }
@@ -116,16 +113,12 @@ struct CoachView: View {
         HStack {
             if !message.fromCoach { Spacer(minLength: 40) }
             Text(message.text)
-                .font(.system(size: 13))
-                .foregroundStyle(message.fromCoach ? Somna.textDim : Color(hex: 0xf6d3ab))
-                .padding(11)
-                .background(message.fromCoach ? Somna.card.opacity(0.65) : Somna.amber.opacity(0.14))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 15).strokeBorder(
-                        message.fromCoach ? Somna.hair : .clear, lineWidth: 0.5
-                    )
-                )
-                .clipShape(RoundedRectangle(cornerRadius: 15))
+                .font(.system(size: 14))
+                .foregroundStyle(message.fromCoach ? Somna.textPrimary : .white)
+                .padding(12)
+                .background(message.fromCoach ? Somna.card : Somna.accent)
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 4)
             if message.fromCoach { Spacer(minLength: 40) }
         }
     }
@@ -177,5 +170,5 @@ struct CoachView: View {
 #Preview {
     CoachView()
         .modelContainer(for: [SleepSession.self, UserProfile.self], inMemory: true)
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(.light)
 }

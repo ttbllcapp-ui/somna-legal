@@ -9,7 +9,7 @@ struct WakeMissionView: View {
         VStack(spacing: 16) {
             HStack {
                 Text("Wake mission")
-                    .font(Somna.Font.serif(20))
+                    .font(Somna.Font.heavy(20))
                     .foregroundStyle(Somna.textPrimary)
                 Spacer()
                 Button {
@@ -24,27 +24,30 @@ struct WakeMissionView: View {
             }
 
             ZStack {
+                Somna.textPrimary
                 RadialGradient(
-                    colors: [Somna.amber.opacity(0.4), Somna.amber.opacity(0.03)],
+                    colors: [Somna.amber.opacity(0.35), .clear],
                     center: .init(x: 0.5, y: 0.3),
                     startRadius: 0,
                     endRadius: 220
                 )
 
                 VStack(spacing: 12) {
+                    TagPill(text: "OBJECT HUNT", color: Somna.amber)
                     Image(systemName: "viewfinder")
                         .font(.system(size: 30))
-                        .foregroundStyle(Somna.amber)
+                        .foregroundStyle(.white)
+                        .padding(.top, 4)
                     Text(object)
-                        .font(Somna.Font.serif(17))
-                        .foregroundStyle(Somna.textPrimary)
+                        .font(Somna.Font.heavy(20))
+                        .foregroundStyle(.white)
                     Text("Point your phone at the object — the alarm only stops once it matches")
                         .font(.system(size: 12))
-                        .foregroundStyle(Somna.textDim)
+                        .foregroundStyle(.white.opacity(0.65))
                         .multilineTextAlignment(.center)
                         .frame(maxWidth: 220)
                     Text(String(format: "00:%02d", secondsLeft))
-                        .font(Somna.Font.mono(30))
+                        .font(Somna.Font.heavy(34))
                         .foregroundStyle(Somna.amber)
                         .padding(.top, 4)
                     ProgressView(value: 0.38)
@@ -53,11 +56,9 @@ struct WakeMissionView: View {
                 }
                 .padding(24)
             }
-            .frame(maxWidth: .infinity, minHeight: 320)
-            .background(Somna.card)
-            .overlay(RoundedRectangle(cornerRadius: 20).strokeBorder(Somna.hair, lineWidth: 0.5))
-            .clipShape(RoundedRectangle(cornerRadius: 20))
-            .amberGlow(radius: 24, opacity: 0.12)
+            .frame(maxWidth: .infinity, minHeight: 340)
+            .clipShape(RoundedRectangle(cornerRadius: 24))
+            .shadow(color: .black.opacity(0.18), radius: 20, x: 0, y: 10)
 
             Text("This is a preview — camera-based object matching (Vision framework) isn't built yet. See docs/design-concept.md.")
                 .font(.system(size: 11))
@@ -71,5 +72,5 @@ struct WakeMissionView: View {
 }
 
 #Preview {
-    WakeMissionView().preferredColorScheme(.dark)
+    WakeMissionView().preferredColorScheme(.light)
 }

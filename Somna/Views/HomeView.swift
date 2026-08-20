@@ -13,17 +13,18 @@ struct HomeView: View {
     private var goalMinutes: Int {
         SleepGoalCalculator.targetMinutes(forAge: profiles.first?.ageYears ?? 30)
     }
+    private var streak: Int { SleepSession.currentStreak(sessions: sessions) }
 
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 18) {
                     header
-                    integrationRow
+                    weekRow
 
                     Group {
                         if let session = latestSession {
-                            scoreRing(for: session)
+                            tonightCard(for: session)
                             statRow(for: session)
                         } else {
                             emptyState
@@ -46,75 +47,136 @@ struct HomeView: View {
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack {
-                Text("Somna")
-                    .font(Somna.Font.serif(15))
-                    .foregroundStyle(Somna.textDim)
-                Spacer()
+        HStack {
+            Text("SOMNA")
+                .font(Somna.Font.heavy(22))
+                .foregroundStyle(Somna.textPrimary)
+
+            Spacer()
+
+            HStack(spacing: 8) {
+                badge(icon: "flame.fill", value: "\(streak)", tint: Somna.coral)
                 Button {
                     showAlarmSheet = true
                 } label: {
-                    Image(systemName: "alarm")
-                        .foregroundStyle(Somna.textDim)
-                        .font(.system(size: 17))
-                        .minTapTarget()
+                    ZStack {
+                        Circle().fill(Somna.card)
+                        Image(systemName: "alarm.fill")
+                            .font(.system(size: 15))
+                            .foregroundStyle(Somna.textPrimary)
+                    }
+                    .frame(width: 38, height: 38)
+                    .shadow(color: .black.opacity(0.08), radius: 6, x: 0, y: 3)
                 }
                 .buttonStyle(PressableButtonStyle())
             }
-            Text("Good evening")
-                .font(.system(size: 12))
-                .foregroundStyle(Somna.textFaint)
         }
     }
 
-    private var integrationRow: some View {
-        HStack(spacing: 8) {
-            IntegrationPill(label: "Health synced")
-            IntegrationPill(label: "Watch connected")
-            Spacer()
+    private func badge(icon: String, value: String, tint: Color) -> some View {
+        HStack(spacing: 4) {
+            Image(systemName: icon)
+                .font(.system(size: 13))
+                .foregroundStyle(tint)
+            Text(value)
+                .font(Somna.Font.bold(14))
+                .foregroundStyle(Somna.textPrimary)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background(Somna.card)
+        .clipShape(Capsule())
+        .shadow(color: .black.opacity(0.06), radius: 6, x: 0, y: 3)
+    }
+
+    private var weekRow: some View {
+        let calendar = Calendar.current
+        let loggedDays = Set(sessions.map { calendar.startOfDay(for: $0.startDate) })
+        let today = calendar.startOfDay(for: .now)
+        let weekdaySymbols = ["S", "M", "T", "W", "T", "F", "S"]
+        let startOfWeek = calendar.date(
+            byAdding: .day,
+            value: -(calendar.component(.weekday, from: today) - 1),
+            to: today
+        ) ?? today
+
+        return HStack(spacing: 10) {
+            ForEach(0..<7, id: \.self) { offset in
+                let day = calendar.date(byAdding: .day, value: offset, to: startOfWeek) ?? today
+                let logged = loggedDays.contains(day)
+                let isToday = calendar.isDate(day, inSameDayAs: today)
+                let isFuture = day > today
+
+                VStack(spacing: 6) {
+                    ZStack {
+                        Circle()
+                            .fill(logged ? Somna.success : Somna.card)
+                        if isToday {
+                            Circle().strokeBorder(Somna.accent, lineWidth: 2)
+                        }
+                        if logged {
+                            Image(systemName: "checkmark")
+                                .font(.system(size: 11, weight: .bold))
+                                .foregroundStyle(.white)
+                        } else if isFuture {
+                            Circle().fill(Somna.hair)
+                        }
+                    }
+                    .frame(width: 30, height: 30)
+
+                    Text(weekdaySymbols[offset])
+                        .font(Somna.Font.bold(10))
+                        .foregroundStyle(Somna.textFaint)
+                }
+                .frame(maxWidth: .infinity)
+            }
         }
     }
 
     private var emptyState: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("No nights logged yet")
-                .font(.system(size: 15, weight: .medium))
+                .font(Somna.Font.bold(16))
                 .foregroundStyle(Somna.textPrimary)
             Text("Tap the button below before you sleep, then tap it again when you wake up. Your goal: \(SleepGoalCalculator.formatted(goalMinutes)).")
-                .font(.system(size: 12))
-                .foregroundStyle(Somna.textFaint)
+                .font(.system(size: 13))
+                .foregroundStyle(Somna.textDim)
         }
-        .glassCard(padding: 14)
+        .glassCard(padding: 16)
     }
 
-    private func scoreRing(for session: SleepSession) -> some View {
+    private func tonightCard(for session: SleepSession) -> some View {
         let score = SleepScoreCalculator.score(for: session, goalMinutes: goalMinutes)
-        return HStack(spacing: 18) {
-            ZStack {
-                Circle()
-                    .stroke(Somna.hair, lineWidth: 8)
-                Circle()
-                    .trim(from: 0, to: CGFloat(score) / 100)
-                    .stroke(Somna.scoreGradient, style: StrokeStyle(lineWidth: 8, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
-                    .animation(.easeOut(duration: 0.6), value: score)
+        return HStack(spacing: 16) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("SLEEP SCORE")
+                    .font(Somna.Font.bold(11))
+                    .foregroundStyle(Somna.textFaint)
                 Text("\(score)")
-                    .font(Somna.Font.serif(22))
+                    .font(Somna.Font.heavy(56))
                     .foregroundStyle(Somna.textPrimary)
-            }
-            .frame(width: 92, height: 92)
-            .amberGlow(radius: 16, opacity: 0.15)
-
-            VStack(alignment: .leading, spacing: 2) {
                 Text(SleepScoreCalculator.label(for: score))
-                    .font(.system(size: 17, weight: .medium))
-                    .foregroundStyle(Somna.textPrimary)
+                    .font(Somna.Font.bold(14))
+                    .foregroundStyle(Somna.accent)
                 Text("Goal: \(SleepGoalCalculator.formatted(goalMinutes))")
                     .font(.system(size: 12))
                     .foregroundStyle(Somna.textFaint)
             }
+            Spacer()
+            ZStack {
+                Circle().stroke(Somna.hair, lineWidth: 10)
+                Circle()
+                    .trim(from: 0, to: CGFloat(score) / 100)
+                    .stroke(Somna.accent, style: StrokeStyle(lineWidth: 10, lineCap: .round))
+                    .rotationEffect(.degrees(-90))
+                    .animation(.easeOut(duration: 0.6), value: score)
+                Image(systemName: "moon.stars.fill")
+                    .font(.system(size: 22))
+                    .foregroundStyle(Somna.accent)
+            }
+            .frame(width: 84, height: 84)
         }
+        .glassCard(padding: 20)
     }
 
     private func statRow(for session: SleepSession) -> some View {
@@ -122,8 +184,8 @@ struct HomeView: View {
         let minutes = session.asleepMinutes % 60
         let efficiencyPercent = Int((session.efficiency * 100).rounded())
         return HStack(spacing: 10) {
-            StatCard(label: "Time asleep", value: "\(hours)h \(minutes)m")
-            StatCard(label: "Efficiency", value: "\(efficiencyPercent)%")
+            StatCard(label: "Time asleep", value: "\(hours)h \(minutes)m", tint: Somna.mint)
+            StatCard(label: "Efficiency", value: "\(efficiencyPercent)%", tint: Somna.lavender)
         }
     }
 
@@ -133,18 +195,14 @@ struct HomeView: View {
                 toggleTracking()
             }
         } label: {
-            Text(isTracking ? "I'm awake" : "Going to sleep")
-                .font(.system(size: 14, weight: .medium))
+            Text(isTracking ? "I'M AWAKE" : "GOING TO SLEEP")
+                .font(Somna.Font.bold(15))
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
-                .foregroundStyle(isTracking ? Somna.ink : Somna.textPrimary)
-                .background(isTracking ? Somna.amber : Somna.card)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .strokeBorder(isTracking ? .clear : Somna.hair, lineWidth: 0.5)
-                )
-                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-                .amberGlow(opacity: isTracking ? 0.2 : 0)
+                .padding(.vertical, 16)
+                .foregroundStyle(.white)
+                .background(isTracking ? Somna.success : Somna.accent)
+                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                .shadow(color: (isTracking ? Somna.success : Somna.accent).opacity(0.35), radius: 16, x: 0, y: 8)
         }
         .buttonStyle(PressableButtonStyle())
     }
@@ -161,41 +219,28 @@ struct HomeView: View {
     }
 }
 
-private struct IntegrationPill: View {
-    let label: String
-    var body: some View {
-        HStack(spacing: 4) {
-            Circle().fill(Somna.free).frame(width: 5, height: 5)
-            Text(label)
-                .font(.system(size: 10))
-                .foregroundStyle(Somna.textFaint)
-        }
-        .padding(.horizontal, 9)
-        .padding(.vertical, 4)
-        .overlay(Capsule().strokeBorder(Somna.hair, lineWidth: 0.5))
-    }
-}
-
 private struct StatCard: View {
     let label: String
     let value: String
+    let tint: Color
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(label.uppercased())
-                .font(.system(size: 9.5, weight: .medium))
-                .foregroundStyle(Somna.textFaint)
+        VStack(alignment: .leading, spacing: 6) {
+            Circle().fill(tint).frame(width: 8, height: 8)
             Text(value)
-                .font(Somna.Font.mono(16))
+                .font(Somna.Font.heavy(20))
                 .foregroundStyle(Somna.textPrimary)
+            Text(label.uppercased())
+                .font(Somna.Font.bold(10))
+                .foregroundStyle(Somna.textFaint)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .glassCard(padding: 12)
+        .glassCard(padding: 14)
     }
 }
 
 #Preview {
     HomeView()
         .modelContainer(for: [SleepSession.self, Alarm.self, UserProfile.self], inMemory: true)
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(.light)
 }

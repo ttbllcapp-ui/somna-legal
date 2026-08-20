@@ -47,6 +47,21 @@ final class SleepSession {
         ]
     }
 
+    /// Consecutive days (counting back from today) with at least one logged
+    /// session — powers the streak flame on Tonight, PushClock-style.
+    static func currentStreak(sessions: [SleepSession]) -> Int {
+        let calendar = Calendar.current
+        let loggedDays = Set(sessions.map { calendar.startOfDay(for: $0.startDate) })
+        var streak = 0
+        var cursor = calendar.startOfDay(for: .now)
+        while loggedDays.contains(cursor) {
+            streak += 1
+            guard let previous = calendar.date(byAdding: .day, value: -1, to: cursor) else { break }
+            cursor = previous
+        }
+        return streak
+    }
+
     /// Placeholder heuristic until real motion/audio sensing lands (see docs/design-concept.md).
     /// Splits a measured total duration into stage estimates using population-average ratios.
     static func estimatingStages(startDate: Date, endDate: Date) -> SleepSession {

@@ -46,15 +46,15 @@ struct SoundMixerView: View {
         ])
     ]
 
+    private let categoryColors: [Color] = [Somna.mint, Somna.lavender, Somna.coral, Somna.gold, Somna.accent]
+
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
-                    ForEach($categories) { $category in
+                    ForEach(Array($categories.enumerated()), id: \.element.id) { index, $category in
                         VStack(alignment: .leading, spacing: 10) {
-                            Text(category.name.uppercased())
-                                .font(.system(size: 11, weight: .medium))
-                                .foregroundStyle(Somna.textFaint)
+                            TagPill(text: category.name.uppercased(), color: categoryColors[index % categoryColors.count])
 
                             ForEach($category.sounds) { $sound in
                                 soundRow($sound)
@@ -66,7 +66,7 @@ struct SoundMixerView: View {
             }
             .background(Somna.backdrop)
             .navigationTitle("Sounds")
-            .toolbarColorScheme(.dark, for: .navigationBar)
+            .toolbarColorScheme(.light, for: .navigationBar)
         }
     }
 
@@ -89,5 +89,5 @@ struct SoundMixerView: View {
 }
 
 #Preview {
-    SoundMixerView().preferredColorScheme(.dark)
+    SoundMixerView().preferredColorScheme(.light)
 }

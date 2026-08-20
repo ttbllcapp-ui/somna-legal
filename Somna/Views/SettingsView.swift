@@ -45,7 +45,7 @@ struct SettingsView: View {
             .scrollContentBackground(.hidden)
             .background(Somna.backdrop)
             .navigationTitle("Settings")
-            .toolbarColorScheme(.dark, for: .navigationBar)
+            .toolbarColorScheme(.light, for: .navigationBar)
             .sheet(isPresented: $showProfileEdit) {
                 if let profile {
                     ProfileEditView(profile: profile)
@@ -93,7 +93,7 @@ private struct PolicyDetailView: View {
         }
         .background(Somna.backdrop)
         .navigationTitle(title)
-        .toolbarColorScheme(.dark, for: .navigationBar)
+        .toolbarColorScheme(.light, for: .navigationBar)
     }
 }
 
@@ -128,5 +128,5 @@ private enum PolicyText {
 #Preview {
     SettingsView()
         .modelContainer(for: [UserProfile.self], inMemory: true)
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(.light)
 }

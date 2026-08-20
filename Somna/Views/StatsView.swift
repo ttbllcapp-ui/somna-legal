@@ -36,7 +36,7 @@ struct StatsView: View {
             }
             .background(Somna.backdrop)
             .navigationTitle("Stats")
-            .toolbarColorScheme(.dark, for: .navigationBar)
+            .toolbarColorScheme(.light, for: .navigationBar)
         }
     }
 
@@ -115,6 +115,7 @@ struct StatsView: View {
                 .font(.system(size: 11))
                 .foregroundStyle(Somna.textFaint)
         }
+        .glassCard(padding: 18)
     }
 
     // MARK: Week / Month — aggregate bar chart
@@ -148,7 +149,7 @@ struct StatsView: View {
                         .font(.system(size: 11))
                         .foregroundStyle(Somna.textFaint)
                     Text(SleepGoalCalculator.formatted(average))
-                        .font(Somna.Font.serif(20))
+                        .font(Somna.Font.heavy(24))
                         .foregroundStyle(Somna.textPrimary)
                 }
                 Spacer()
@@ -184,11 +185,12 @@ struct StatsView: View {
                 }
             }
         }
+        .glassCard(padding: 18)
     }
 }
 
 #Preview {
     StatsView()
         .modelContainer(for: [SleepSession.self, Alarm.self], inMemory: true)
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(.light)
 }

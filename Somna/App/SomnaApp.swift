@@ -6,8 +6,8 @@ struct SomnaApp: App {
     var body: some Scene {
         WindowGroup {
             AppRootView()
-                .preferredColorScheme(.dark)
-                .tint(Somna.amber)
+                .preferredColorScheme(.light)
+                .tint(Somna.accent)
         }
         .modelContainer(for: [SleepSession.self, Alarm.self, UserProfile.self])
     }

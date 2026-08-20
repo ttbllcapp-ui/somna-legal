@@ -12,65 +12,42 @@ extension Color {
     }
 }
 
+/// Light, bold, high-contrast system — modeled on PushClock (5,700+
+/// ratings in ~5 months, the fastest-growing app in this category we
+/// found). Swapped the previous dark "atmospheric" direction entirely:
+/// that kept getting rejected as too soft. See docs/design-concept.md.
 enum Somna {
-    // Atmospheric night gradient — deep indigo through violet — with
-    // glass cards floating on top, instead of a flat navy ground.
-    // See docs/design-concept.md.
-    static let ink = Color(hex: 0x0a0a1f)
-    static let ink2 = Color(hex: 0x131033)
-    static let violet = Color(hex: 0x2c1f5e)
-    static let midnight = Color(hex: 0x191248)
+    static let bg = Color(hex: 0xF1F0F6)
+    static let card = Color.white
+    static let card2 = Color(hex: 0xF7F6FB)
+    static let hair = Color.black.opacity(0.07)
 
-    static let card = Color(hex: 0x1c1840)
-    static let card2 = Color(hex: 0x241d52)
-    static let hair = Color.white.opacity(0.14)
+    static let textPrimary = Color(hex: 0x15141C)
+    static let textDim = Color(hex: 0x66646F)
+    static let textFaint = Color(hex: 0x9997A2)
 
-    static let textPrimary = Color(hex: 0xfbf9ff)
-    static let textDim = Color(hex: 0xc2bce0)
-    static let textFaint = Color(hex: 0x8b84b5)
+    // Somna's own brand accent — bold indigo, not a copy of PushClock's
+    // green, but the same "one loud color on a light ground" logic.
+    static let accent = Color(hex: 0x5B4FEE)
+    static let accentDeep = Color(hex: 0x4038B8)
+    static let success = Color(hex: 0x1FAA59)
+    static let coral = Color(hex: 0xFF6152)
+    static let mint = Color(hex: 0x2FCCB8)
+    static let gold = Color(hex: 0xFFB020)
+    static let lavender = Color(hex: 0x9C8CFF)
 
-    static let amber = Color(hex: 0xffb35e)
-    static let amberDeep = Color(hex: 0xf5794a)
-    static let deep = Color(hex: 0x7c7dfa)
-    static let stageLight = Color(hex: 0x4fd1c5)
-    static let stageRem = Color(hex: 0xa9a2ff)
-    static let stageAwake = Color(hex: 0xf5794a)
-    static let free = Color(hex: 0x4fd3b8)
+    static let deep = accent
+    static let stageLight = mint
+    static let stageRem = lavender
+    static let stageAwake = coral
+    static let free = success
+    static let amber = gold
+    static let amberDeep = Color(hex: 0xE0921A)
 
-    static let scoreGradient = AngularGradient(
-        colors: [amberDeep, amber, stageRem, deep, amberDeep],
-        center: .center,
-        startAngle: .degrees(-90),
-        endAngle: .degrees(270)
-    )
-
-    /// The full-bleed atmospheric background every screen sits on.
+    /// Flat light ground — no gradient mesh, no glow. PushClock's whole
+    /// point is plain, legible, high-contrast utility.
     static var backdrop: some View {
-        ZStack {
-            LinearGradient(
-                colors: [midnight, ink2, ink],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            GeometryReader { proxy in
-                Circle()
-                    .fill(deep.opacity(0.35))
-                    .frame(width: proxy.size.width * 0.9)
-                    .blur(radius: 90)
-                    .offset(x: -proxy.size.width * 0.3, y: -proxy.size.height * 0.28)
-                Circle()
-                    .fill(amberDeep.opacity(0.16))
-                    .frame(width: proxy.size.width * 0.7)
-                    .blur(radius: 100)
-                    .offset(x: proxy.size.width * 0.35, y: proxy.size.height * 0.15)
-                Circle()
-                    .fill(stageRem.opacity(0.14))
-                    .frame(width: proxy.size.width * 0.6)
-                    .blur(radius: 90)
-                    .offset(x: proxy.size.width * 0.1, y: proxy.size.height * 0.65)
-            }
-        }
-        .ignoresSafeArea()
+        bg.ignoresSafeArea()
     }
 
     enum SleepStage: CaseIterable {
@@ -96,50 +73,47 @@ enum Somna {
     }
 
     enum Font {
-        static func serif(_ size: CGFloat, weight: SwiftUI.Font.Weight = .medium) -> SwiftUI.Font {
-            .system(size: size, weight: weight, design: .serif)
+        /// Heavy rounded weight for hero numbers and headlines — the
+        /// PushClock signature: big, black, unmissable.
+        static func heavy(_ size: CGFloat) -> SwiftUI.Font {
+            .system(size: size, weight: .heavy, design: .rounded)
         }
-        static func mono(_ size: CGFloat, weight: SwiftUI.Font.Weight = .regular) -> SwiftUI.Font {
-            .system(size: size, weight: weight, design: .monospaced)
+        static func bold(_ size: CGFloat) -> SwiftUI.Font {
+            .system(size: size, weight: .bold, design: .rounded)
+        }
+        static func serif(_ size: CGFloat, weight: SwiftUI.Font.Weight = .semibold) -> SwiftUI.Font {
+            .system(size: size, weight: weight, design: .rounded)
+        }
+        static func mono(_ size: CGFloat, weight: SwiftUI.Font.Weight = .semibold) -> SwiftUI.Font {
+            .system(size: size, weight: weight, design: .rounded)
         }
     }
 }
 
-/// Real glassmorphism: a blurred translucent material over the
-/// atmospheric backdrop, not a flat solid fill.
+/// Flat white card with a soft, close, low-opacity shadow — not glass,
+/// not glow. This is the PushClock card language.
 struct GlassCard: ViewModifier {
     var padding: CGFloat = 16
-    var radius: CGFloat = 22
+    var radius: CGFloat = 20
     func body(content: Content) -> some View {
         content
             .padding(padding)
-            .background(.ultraThinMaterial.opacity(0.55))
-            .background(Somna.card.opacity(0.35))
-            .overlay(
-                RoundedRectangle(cornerRadius: radius, style: .continuous)
-                    .strokeBorder(
-                        LinearGradient(
-                            colors: [.white.opacity(0.35), .white.opacity(0.05)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ),
-                        lineWidth: 1
-                    )
-            )
+            .background(Somna.card)
             .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
-            .shadow(color: .black.opacity(0.35), radius: 20, x: 0, y: 10)
+            .shadow(color: .black.opacity(0.06), radius: 14, x: 0, y: 6)
     }
 }
 
 extension View {
-    func glassCard(padding: CGFloat = 16, radius: CGFloat = 22) -> some View {
+    func glassCard(padding: CGFloat = 16, radius: CGFloat = 20) -> some View {
         modifier(GlassCard(padding: padding, radius: radius))
     }
 
-    /// A soft, tinted glow rather than a flat black drop shadow — reads as
-    /// "premium" against a colorful ground without looking muddy.
-    func amberGlow(radius: CGFloat = 24, opacity: Double = 0.35) -> some View {
-        shadow(color: Somna.amber.opacity(opacity), radius: radius, x: 0, y: 6)
+    /// Kept as a name for call-site compatibility; now a plain soft
+    /// shadow in the accent color rather than a colored glow — the
+    /// light system doesn't want neon bloom.
+    func amberGlow(radius: CGFloat = 14, opacity: Double = 0.22) -> some View {
+        shadow(color: Somna.accent.opacity(opacity), radius: radius, x: 0, y: 6)
     }
 
     /// Minimum 44×44pt hit target per Apple HIG, for icon-only controls
@@ -150,13 +124,28 @@ extension View {
     }
 }
 
-/// Subtle scale-down on press instead of the default opacity dim —
-/// feels more tactile/premium on dark surfaces.
+/// Subtle scale-down on press — tactile without being showy.
 struct PressableButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .scaleEffect(configuration.isPressed ? 0.96 : 1)
             .opacity(configuration.isPressed ? 0.85 : 1)
             .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
+    }
+}
+
+/// A small colorful pill badge — PushClock's category-tag language
+/// (Push-ups / Touch Grass / Exercise chips).
+struct TagPill: View {
+    let text: String
+    var color: Color = Somna.accent
+    var body: some View {
+        Text(text)
+            .font(Somna.Font.bold(11))
+            .foregroundStyle(color == .white ? Somna.textPrimary : .white)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            .background(color)
+            .clipShape(Capsule())
     }
 }

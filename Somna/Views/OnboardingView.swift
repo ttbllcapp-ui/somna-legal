@@ -17,7 +17,7 @@ struct OnboardingView: View {
     var body: some View {
         VStack(spacing: 0) {
             ProgressView(value: Double(step + 1), total: 3)
-                .tint(Somna.amber)
+                .tint(Somna.accent)
                 .padding(.horizontal, 24)
                 .padding(.top, 20)
 
@@ -39,48 +39,24 @@ struct OnboardingView: View {
     }
 
     private var welcomeStep: some View {
-        VStack(spacing: 0) {
+        VStack(alignment: .leading, spacing: 0) {
             Spacer()
 
-            ZStack {
-                Circle()
-                    .fill(Somna.amber.opacity(0.28))
-                    .frame(width: 130, height: 130)
-                    .blur(radius: 24)
-                Circle()
-                    .fill(
-                        LinearGradient(colors: [Somna.card2, Somna.card], startPoint: .top, endPoint: .bottom)
-                    )
-                    .frame(width: 108, height: 108)
-                    .overlay(
-                        Circle().strokeBorder(
-                            LinearGradient(colors: [.white.opacity(0.4), .white.opacity(0.05)], startPoint: .topLeading, endPoint: .bottomTrailing),
-                            lineWidth: 1
-                        )
-                    )
-                    .shadow(color: .black.opacity(0.4), radius: 18, x: 0, y: 10)
-                Image(systemName: "moon.stars.fill")
-                    .font(.system(size: 44))
-                    .foregroundStyle(Somna.scoreGradient)
-            }
-            .frame(height: 150)
+            TagPill(text: "SCIENCE-BACKED", color: Somna.accent)
+                .padding(.bottom, 16)
 
-            Text("Somna")
-                .font(Somna.Font.serif(52, weight: .semibold))
+            Text("Never Guess\nYour Sleep\nGoal Again.")
+                .font(Somna.Font.heavy(44))
                 .foregroundStyle(Somna.textPrimary)
-                .shadow(color: .black.opacity(0.4), radius: 12, x: 0, y: 6)
-                .padding(.top, 8)
+                .lineSpacing(2)
 
-            Text("Let's ask a few things so we can set a sleep goal that's actually yours — based on the science of what your age needs.")
+            Text("A few quick questions, then a sleep goal that's actually calculated for your age — not a generic 8 hours.")
                 .font(.system(size: 16))
                 .foregroundStyle(Somna.textDim)
-                .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
-                .frame(maxWidth: 320)
-                .padding(.top, 14)
+                .padding(.top, 16)
 
             Spacer()
-
             nextButton("Get started")
         }
         .padding(24)
@@ -88,40 +64,39 @@ struct OnboardingView: View {
 
     private var profileStep: some View {
         VStack(alignment: .leading, spacing: 22) {
-            Text("A little about you")
-                .font(Somna.Font.serif(28, weight: .semibold))
+            Text("A little about you.")
+                .font(Somna.Font.heavy(30))
                 .foregroundStyle(Somna.textPrimary)
                 .padding(.top, 12)
 
             VStack(alignment: .leading, spacing: 24) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Date of birth").font(.system(size: 13)).foregroundStyle(Somna.textFaint)
+                    Text("DATE OF BIRTH").font(Somna.Font.bold(11)).foregroundStyle(Somna.textFaint)
                     DatePicker("", selection: $birthDate, displayedComponents: .date)
                         .datePickerStyle(.compact)
                         .labelsHidden()
-                        .colorScheme(.dark)
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
-                        Text("Height").font(.system(size: 13)).foregroundStyle(Somna.textFaint)
+                        Text("HEIGHT").font(Somna.Font.bold(11)).foregroundStyle(Somna.textFaint)
                         Spacer()
-                        Text("\(Int(heightCM)) cm").font(Somna.Font.mono(13)).foregroundStyle(Somna.textPrimary)
+                        Text("\(Int(heightCM)) cm").font(Somna.Font.heavy(15)).foregroundStyle(Somna.textPrimary)
                     }
-                    Slider(value: $heightCM, in: 100...220, step: 1).tint(Somna.amber)
+                    Slider(value: $heightCM, in: 100...220, step: 1).tint(Somna.accent)
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
-                        Text("Weight").font(.system(size: 13)).foregroundStyle(Somna.textFaint)
+                        Text("WEIGHT").font(Somna.Font.bold(11)).foregroundStyle(Somna.textFaint)
                         Spacer()
-                        Text("\(Int(weightKG)) kg").font(Somna.Font.mono(13)).foregroundStyle(Somna.textPrimary)
+                        Text("\(Int(weightKG)) kg").font(Somna.Font.heavy(15)).foregroundStyle(Somna.textPrimary)
                     }
-                    Slider(value: $weightKG, in: 30...200, step: 1).tint(Somna.amber)
+                    Slider(value: $weightKG, in: 30...200, step: 1).tint(Somna.accent)
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Sex").font(.system(size: 13)).foregroundStyle(Somna.textFaint)
+                    Text("SEX").font(Somna.Font.bold(11)).foregroundStyle(Somna.textFaint)
                     Picker("", selection: $sex) {
                         ForEach(BiologicalSex.allCases, id: \.self) { option in
                             Text(option.label).tag(option)
@@ -146,24 +121,11 @@ struct OnboardingView: View {
             Spacer()
 
             VStack(alignment: .leading, spacing: 16) {
-                Text("Your personal goal")
-                    .font(.system(size: 12, weight: .medium))
-                    .foregroundStyle(Somna.textFaint)
-                    .textCase(.uppercase)
+                TagPill(text: "YOUR GOAL", color: Somna.success)
 
-                HStack(spacing: 18) {
-                    ZStack {
-                        Circle().stroke(Somna.hair, lineWidth: 7)
-                        Circle()
-                            .trim(from: 0, to: 0.8)
-                            .stroke(Somna.scoreGradient, style: StrokeStyle(lineWidth: 7, lineCap: .round))
-                            .rotationEffect(.degrees(-126))
-                    }
-                    .frame(width: 76, height: 76)
-                    .amberGlow(radius: 18, opacity: 0.3)
-
+                HStack(alignment: .lastTextBaseline, spacing: 4) {
                     Text(SleepGoalCalculator.formatted(targetMinutes))
-                        .font(Somna.Font.serif(48, weight: .semibold))
+                        .font(Somna.Font.heavy(52))
                         .foregroundStyle(Somna.textPrimary)
                 }
 
@@ -197,14 +159,14 @@ struct OnboardingView: View {
                 withAnimation { step += 1 }
             }
         } label: {
-            Text(title)
-                .font(.system(size: 15, weight: .medium))
+            Text(title.uppercased())
+                .font(Somna.Font.bold(15))
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 14)
-                .foregroundStyle(Somna.ink)
-                .background(Somna.amber)
-                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-                .amberGlow()
+                .padding(.vertical, 16)
+                .foregroundStyle(.white)
+                .background(Somna.accent)
+                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .shadow(color: Somna.accent.opacity(0.35), radius: 16, x: 0, y: 8)
         }
         .buttonStyle(PressableButtonStyle())
     }
@@ -224,5 +186,5 @@ struct OnboardingView: View {
 #Preview {
     OnboardingView()
         .modelContainer(for: [UserProfile.self], inMemory: true)
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(.light)
 }

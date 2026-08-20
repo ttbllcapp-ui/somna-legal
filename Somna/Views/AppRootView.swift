@@ -25,5 +25,5 @@ struct AppRootView: View {
 #Preview {
     AppRootView()
         .modelContainer(for: [UserProfile.self, SleepSession.self, Alarm.self], inMemory: true)
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(.light)
 }

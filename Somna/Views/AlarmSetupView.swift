@@ -70,7 +70,7 @@ struct AlarmSetupView: View {
             .scrollContentBackground(.hidden)
             .background(Somna.backdrop)
             .navigationTitle("Alarm")
-            .toolbarColorScheme(.dark, for: .navigationBar)
+            .toolbarColorScheme(.light, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") { save() }
@@ -119,5 +119,5 @@ struct AlarmSetupView: View {
 #Preview {
     AlarmSetupView()
         .modelContainer(for: [Alarm.self], inMemory: true)
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(.light)
 }
