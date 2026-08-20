@@ -24,7 +24,7 @@ struct SettingsView: View {
                 }
 
                 Section("App") {
-                    LabeledContent("Pricing", value: "Completely free")
+                    LabeledContent("In-app purchases", value: "None")
                     LabeledContent("Version", value: "1.0.0")
                 }
                 .listRowBackground(Somna.card)
@@ -111,7 +111,7 @@ private enum PolicyText {
     static let terms = """
     By using Somna, you agree that the scores, suggestions, and reminders it provides are for informational purposes only and are not a substitute for professional medical diagnosis or treatment.
 
-    Somna is currently completely free — no feature is behind a paywall.
+    Somna has no subscription and no in-app purchases — every feature is available from the first launch.
 
     You may use the app as you like, other than misuse such as reverse engineering or redistribution.
     """

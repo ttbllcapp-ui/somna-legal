@@ -27,7 +27,7 @@ struct CoachView: View {
                         .font(Somna.Font.heavy(18))
                         .foregroundStyle(Somna.textPrimary)
                     Spacer()
-                    TagPill(text: "FREE", color: Somna.success)
+                    TagPill(text: "ON-DEVICE", color: Somna.success)
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 12)

@@ -40,7 +40,6 @@ enum Somna {
     static let stageLight = mint
     static let stageRem = lavender
     static let stageAwake = coral
-    static let free = success
     static let amber = gold
     static let amberDeep = Color(hex: 0xE0921A)
 
