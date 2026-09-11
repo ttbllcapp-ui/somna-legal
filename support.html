@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Somna — Support</title>
+<title>Somna Support</title>
 <style>
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 640px; margin: 0 auto; padding: 40px 20px 80px; color: #15141C; line-height: 1.6; }
   h1 { font-size: 28px; margin-bottom: 4px; }
@@ -16,7 +16,7 @@
 <h1>Support</h1>
 <p class="updated">Somna</p>
 
-<p>Questions, bug reports, or feature requests — email <a href="mailto:tayfuntolga91bilgi@gmail.com">tayfuntolga91bilgi@gmail.com</a> and you'll get a reply directly from the developer.</p>
+<p>For questions, bug reports or feature requests, email <a href="mailto:tayfuntolga91bilgi@gmail.com">tayfuntolga91bilgi@gmail.com</a> and you'll get a reply directly from the developer.</p>
 
 <h2>My sleep stages say "estimated"</h2>
 <p>Somna reads real stage data from Apple Health when it's available. Turn on Sleep Tracking on your Apple Watch, or "Track Sleep with iPhone" in the Health app, and future nights will use that real data instead of an estimate. In the app: Settings &rarr; Sleep data source.</p>
@@ -24,8 +24,20 @@
 <h2>The wake mission camera isn't matching my object</h2>
 <p>Retake the reference photo in good lighting, and try to match the same angle and distance at wake time. Matching runs entirely on your device.</p>
 
+<h2>My alarm rang with a different sound than the one I picked</h2>
+<p>On iOS 26.1 and later Somna hands the alarm to the system so that it can ring through silent mode and Focus and keep ringing after the app is closed. The system supplies its own alert tone and runs the snooze itself, so the tone you chose in Somna and the snooze limit you set apply on earlier iOS versions. The alarm editor notes this under each setting.</p>
+
+<h2>Where are my snore recordings, and how long are they kept?</h2>
+<p>Open the Snoring screen to play back each episode from the night. Somna listens only between the tap that starts a night and the tap that ends it, never at other times, and it keeps a short clip of each episode on your device only. Clips are deleted automatically after 14 days. Nothing is uploaded. Somna measures loudness, it does not diagnose.</p>
+
+<h2>How do I share my sleep with my partner, and what do they see?</h2>
+<p>Open the household screen and tap Invite. Sharing goes through your own iCloud, not through a Somna server. The person you invite sees four values per night: the date, how long you slept, your score and your goal. They do not see your name, your recordings, your Health data or anything about other household members. You can stop sharing from the same screen at any time.</p>
+
+<h2>The alarm did not go off at all</h2>
+<p>Check that you allowed the alarm permission when Somna asked for it. On iOS 26.1 and later Somna uses the system alarm, which needs that permission; without it the alarm falls back to a notification, which silent mode can suppress. You can grant it again in the Settings app under Somna.</p>
+
 <h2>Is Somna free?</h2>
-<p>Yes — no subscription, no in-app purchases.</p>
+<p>Yes. No subscription, no in-app purchases.</p>
 
 <p>See also: <a href="privacy.html">Privacy Policy</a> &middot; <a href="terms.html">Terms of Use</a></p>
 </body>
